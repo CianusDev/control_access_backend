@@ -1,14 +1,14 @@
 import { z } from "zod";
 import { query } from "../config/database";
 import { User } from "../models/user.model";
-import { userSchema } from "../schemas/user.schema";
+import { userSchema, userUpdateSchema } from "../schemas/user.schema";
 import { generateRandomPassword, hashPassword } from "../utils/utils";
 
 export class UserRepository {
     
     async createUser(payload: z.infer<typeof userSchema>):Promise<User | null>{
         
-        const { email, username, firstname, lastname } = payload;
+        const { email, username, firstname, lastname, role_id } = payload;
 
         const password =  generateRandomPassword();
 
@@ -29,26 +29,16 @@ export class UserRepository {
         }
 
         const result = await query(
-            `INSERT INTO users (username, password_hashed, email, firstname, lastname) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-            [username, hashedPassword, email, firstname, lastname]
+            `INSERT INTO users (username, password_hashed, email, firstname, lastname, role_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+            [username, hashedPassword, email, firstname, lastname , role_id]
         );
 
         const user = result.rows[0];
 
-        return {
-            id: user.id,
-            username: user.username,
-            password_hashed: user.password_hashed,
-            email: user.email,
-            firstname: user.firstname,
-            role_id:user.role_id,
-            lastname: user.lastname,
-            created_at: user.created_at,
-            updated_at: user.updated_at,
-        };
+        return user as User;
     }
 
-    async updateUser(id: string, payload: z.infer<typeof userSchema>): Promise<User | null> {
+    async updateUser(id: string, payload: z.infer<typeof userUpdateSchema>): Promise<User | null> {
         const { email, username, firstname, lastname } = payload;
 
         const userExistsResult = await query(
@@ -58,28 +48,20 @@ export class UserRepository {
 
         const existingUser = userExistsResult.rows[0];
 
+        console.log({existingUser})
+
         if (!existingUser) {
             throw new Error("User not found");
         }
 
         const result = await query(
-            `UPDATE users SET username = $1, email = $2, firstname = $3, lastname = $4 WHERE id = $5`,
+            `UPDATE users SET username = $1, email = $2, firstname = $3, lastname = $4 WHERE id = $5 RETURNING *`,
             [username, email, firstname, lastname, id]
         );
 
         const user = result.rows[0];
 
-        return {
-            id: user.id,
-            username: user.username,
-            password_hashed: user.password_hashed,
-            email: user.email,
-            firstname: user.firstname,
-            role_id:user.role_id,
-            lastname: user.lastname,
-            created_at: user.created_at,
-            updated_at: user.updated_at,
-        };
+        return user as User;
     }
 
     async deleteUser(id: string): Promise<void> {
@@ -105,17 +87,35 @@ export class UserRepository {
             return null;
         }
 
-        return {
-            id: user.id,
-            username: user.username,
-            password_hashed: user.password_hashed,
-            email: user.email,
-            firstname: user.firstname,
-            lastname: user.lastname,
-            role_id:user.role_id,
-            created_at: user.created_at,
-            updated_at: user.updated_at,
-        };
+        return user as User;
     }
-    
+
+    async getUsers(): Promise<User[]|null> {
+        const result = await query(
+            `SELECT * FROM users`
+        );
+
+        const users = result.rows
+
+        return users as User[];
+    }
+
+    async updateDeletedUser(id: string): Promise<void> {
+        const userExistsResult = await query(
+            `SELECT * FROM users WHERE id = $1`,
+            [id]
+        );
+
+        const existingUser = userExistsResult.rows[0];
+
+        if (!existingUser) {
+            throw new Error("User not found");
+        }
+        
+        await query(
+            `UPDATE users SET is_deleted = true WHERE id = $1 RETURNING *`,
+            [id]
+        );
+    }
+
 }

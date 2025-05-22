@@ -23,7 +23,7 @@ async function createRootAdmin() {
     }
 
     // Récupère le rôle root
-    const roleResult = await pool.query(`SELECT name FROM roles WHERE name = 'root' LIMIT 1`);
+    const roleResult = await pool.query(`SELECT * FROM roles WHERE name = 'root' LIMIT 1`);
     if (roleResult.rowCount === 0) {
       throw new Error("Le rôle 'root' n'existe pas.");
     }

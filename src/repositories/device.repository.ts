@@ -27,17 +27,23 @@ export class DeviceRepository {
 
     async createDevice(payload: z.infer<typeof deviceSchema>): Promise<Device|null> {
 
-        const deviceExistsResult = await query(
+        // Check for existing device with same nom
+        const deviceNomResult = await query(
             `SELECT * FROM devices WHERE nom = $1`,
             [payload.nom]
         );
+        if (deviceNomResult.rows.length > 0) {
+            throw new Error("Le nom du device existe déjà !");
+        }
 
-        const existingDevice = deviceExistsResult.rows[0];
-
-        if (existingDevice) {
-            const errorMessages: Record<string, string> = {};
-            if (existingDevice.nom === payload.nom) errorMessages.nom = "Nom de device déjà utilisé";
-            throw new Error(JSON.stringify(errorMessages));
+        // Check for existing device with same chip_id
+        const deviceChipIdResult = await query(
+            `SELECT * FROM devices WHERE chip_id = $1`,
+            [payload.chip_id]
+        );
+        
+        if (deviceChipIdResult.rows.length > 0) {
+            throw new Error("L'identifiant du device existe déjà !");
         }
 
         const result = await query(
@@ -49,8 +55,29 @@ export class DeviceRepository {
     }
 
     async updateDevice(id: string, payload: z.infer<typeof deviceSchema>): Promise<Device|null> {
+
+        const deviceExistsResult = await query(
+            `SELECT * FROM devices WHERE id = $1`,
+            [id]
+        );
+
+        const existingDevice = deviceExistsResult.rows[0] as Device;
+
+        if (!existingDevice) {
+            throw new Error("Device not found");
+        }
+
+        if (existingDevice.chip_id === payload.chip_id) throw new Error("l'identifiant du device existe déjà !");
+
+        if (existingDevice.nom === payload.nom) throw new Error("Le nom du device existe déjà !");
+
+        if (existingDevice.ip_locale === payload.ip_locale) throw new Error("aucun autre device a déjà cette ip_locale !");
+
+        if (existingDevice.localisation === payload.localisation) throw new Error("un autre device a déjà cette localisation !");
+        
+        
         const result = await query(
-            `UPDATE devices SET nom = $1, chip_id = $2, ip_locale = $3, localisation = $4, access_level = $5 WHERE id = $6`,
+            `UPDATE devices SET nom = $1, chip_id = $2, ip_locale = $3, localisation = $4, access_level = $5 WHERE id = $6 RETURNING *`,
             [payload.nom, payload.chip_id, payload.ip_locale, payload.localisation, payload.access_level, id]
         );
 
@@ -127,6 +154,25 @@ export class DeviceRepository {
         }
 
         return false;
+    }
+
+    async updateDeletedDevice(id: string): Promise<void> {
+        const deviceExistsResult = await query(
+            `SELECT * FROM devices WHERE id = $1`,
+            [id]
+        );
+
+        const existingDevice = deviceExistsResult.rows[0] as Device;
+
+        if (!existingDevice) {
+            throw new Error("Device not found");
+        }
+
+        await query(
+            `UPDATE devices SET is_deleted = true WHERE id = $1 RETURNING *`,
+            [id]
+        );
+
     }
     
 }

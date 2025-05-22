@@ -27,6 +27,8 @@ async function setupDatase() {
             firstname VARCHAR(100),
             lastname VARCHAR(100),
             role_id UUID REFERENCES roles(id),
+            is_active BOOLEAN DEFAULT true,
+            is_deleted BOOLEAN DEFAULT false,
             created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
         );
@@ -37,7 +39,9 @@ async function setupDatase() {
             uid VARCHAR(255) UNIQUE,
             user_id UUID REFERENCES users(id),
             actif BOOLEAN DEFAULT true,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            is_deleted BOOLEAN DEFAULT false,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
         );
 
       -- Table des appareils ESP32 (avec type d'accès)
@@ -47,7 +51,10 @@ async function setupDatase() {
             chip_id VARCHAR(100) UNIQUE,
             ip_locale VARCHAR(50),
             localisation TEXT,
-            access_level VARCHAR(50) DEFAULT 'any' -- admin-only, user-only, any
+            is_deleted BOOLEAN DEFAULT false,
+            access_level VARCHAR(50) DEFAULT 'all' -- admin-only, user-only, all , security-only
+            created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
         );
 
       -- Table des logs d'accès
@@ -56,8 +63,22 @@ async function setupDatase() {
             badge_uid VARCHAR(255),
             device_id UUID REFERENCES devices(id),
             access_status VARCHAR(20),
+            is_deleted BOOLEAN DEFAULT false,
             timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
         );
+
+        CREATE TABLE alerts (
+            id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+            user_id UUID REFERENCES users(id),
+            device_id UUID REFERENCES devices(id),
+            message TEXT NOT NULL,
+            is_deleted BOOLEAN DEFAULT false,
+            level TEXT CHECK (level IN ('info', 'warning', 'critical')) DEFAULT 'info',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
         `;
 
         await pool.query(createTableQuery);

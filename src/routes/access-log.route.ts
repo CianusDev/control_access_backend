@@ -1,5 +1,6 @@
-import { AccessLogController } from "../../controllers/access-log.controller";
+import { AccessLogController } from "../controllers/access-log.controller";
 import express from 'express';
+
 const router = express.Router();
 
 // récupérer tous les logs d'accès
@@ -18,13 +19,18 @@ router.post('/', async(req, res) => {
 });
 
 // modifier un log d'accès
-router.put('/:id', async(req, res) => {
-    AccessLogController.updateAccessLog(req, res)
+// router.put('/:id', async(req, res) => {
+//     AccessLogController.updateAccessLog(req, res)
+// });
+
+// modifier un log d'accès (supprimer)
+router.patch('/:id', async(req, res) => {
+    AccessLogController.updateDeletedAccessLog(req, res)
 });
 
 // supprimer un log d'accès
-router.delete('/:id', async(req, res) => {
-    AccessLogController.deleteAccessLog(req, res)
-});
+// router.delete('/:id', async(req, res) => {
+//     AccessLogController.deleteAccessLog(req, res)
+// });
 
 export default router;

@@ -4,8 +4,7 @@ import { Request, Response } from "express";
 const authRepository = new AuthRepository();
 
 export class AuthController {
-
-
+    
     static async login(req: Request, res: Response) {
         try {
             const user = await authRepository.login(req.body);

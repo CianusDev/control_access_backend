@@ -1,5 +1,5 @@
-import { DeviceController } from "../../controllers/device.controller";
-import { auth } from "../../middlewares/auth.middleware";
+import { DeviceController } from "../controllers/device.controller";
+import { auth } from "../middlewares/auth.middleware";
 import express from 'express';
 const router = express.Router();
 
@@ -17,6 +17,10 @@ router.post('/', auth, async(req, res) => {
 
 router.put('/:id', auth, async(req, res) => {
     DeviceController.updateDevice(req, res)
+});
+
+router.patch('/:id', auth, async(req, res) => {
+    DeviceController.updateDeletedDevice(req, res)
 });
 
 router.delete('/:id', auth, async(req, res) => {

@@ -1,6 +1,6 @@
 
-import { AuthController } from '../../controllers/auth.controller';
 import express from 'express';
+import { AuthController } from '../controllers/auth.controller';
 const router = express.Router();
 
 // Route pour la connexion d'un utilisateur

@@ -1,17 +1,18 @@
 import { Request, Response } from "express";
-import { BadgeRepository } from "../repositories/badge.repository";
-import { badgeSchema } from "../schemas/badge.schema";
+import { AlertRepository } from "../repositories/alert.repository";
+import { alertSchema } from "../schemas/alert.schema";
 
-const badgeRepository = new BadgeRepository();
 
-export class BadgeController {
+const alertRepository = new AlertRepository();
 
-    static async getBadges(req: Request, res: Response) {
+export class AlertController {
+
+    static async getAlerts(req: Request, res: Response) {
         try {
-            const badges = await badgeRepository.getBadges();
+            const alerts = await alertRepository.getAlerts();
             return res.status(200).json({
-                message: "Badges récupérés avec succès",
-                badges,
+                message: "Alerts récupérés avec succès",
+                alerts,
             });
         } catch (error) {
             if (error instanceof Error) {
@@ -23,7 +24,7 @@ export class BadgeController {
                 }
 
                 return res.status(400).json({
-                    message: "Erreur lors de la récupération des badges",
+                    message: "Erreur lors de la récupération des alerts",
                     error: errorMessage,
                 });
             }
@@ -34,22 +35,14 @@ export class BadgeController {
         }
     }
 
-    static async getBadge(req: Request, res: Response) {
+    static async getAlert(req: Request, res: Response) {
         try {
-            const badgeId = req.params.id;
-            const badge = await badgeRepository.getBadge(badgeId);
-
-            if (!badge) {
-                return res.status(404).json({
-                    message: "Badge not found",
-                });
-            }
-            
+            const alertId = req.params.id;
+            const alert = await alertRepository.getAlert(alertId);
             return res.status(200).json({
-                message: "Badge récupéré avec succès",
-                badge,
+                message: "Alert récupéré avec succès",
+                alert,
             });
-
         } catch (error) {
             if (error instanceof Error) {
                 let errorMessage;
@@ -60,7 +53,7 @@ export class BadgeController {
                 }
 
                 return res.status(400).json({
-                    message: "Erreur lors de la récupération du badge",
+                    message: "Erreur lors de la récupération de l'alert",
                     error: errorMessage,
                 });
             }
@@ -71,21 +64,21 @@ export class BadgeController {
         }
     }
 
-    static async createBadge(req: Request, res: Response) {
+    static async createAlert(req: Request, res: Response) {
         try {
             const body = req.body 
-            const validation = badgeSchema.safeParse(body);
+            const validation = alertSchema.safeParse(body);
             if (!validation.success) {
                 return res.status(400).json({
-                    message: "Erreur lors de la validation du badge",
+                    message: "Erreur lors de la validation de l'alert",
                     error: validation.error.flatten().fieldErrors,
                 });
             }
 
-            const badge = await badgeRepository.createBadge(validation.data);
+            const alert = await alertRepository.createAlert(validation.data);
             return res.status(201).json({
-                message: "Badge créé avec succès",
-                badge,
+                message: "Alert créé avec succès",
+                alert,
             });
         } catch (error) {
             if (error instanceof Error) {
@@ -97,7 +90,7 @@ export class BadgeController {
                 }
 
                 return res.status(400).json({
-                    message: "Erreur lors de la création du badge",
+                    message: "Erreur lors de la création de l'alert",
                     error: errorMessage,
                 });
             }
@@ -108,24 +101,13 @@ export class BadgeController {
         }
     }
 
-    static async updateBadge(req: Request, res: Response) {
+    static async deleteAlert(req: Request, res: Response) {
         try {
-            const badgeId = req.params.id;
-            const body = req.body 
-            const validation = badgeSchema.safeParse(body);
-            if (!validation.success) {
-                return res.status(400).json({
-                    message: "Erreur lors de la validation du badge",
-                    error: validation.error.flatten().fieldErrors,
-                });
-            }
-
-            const badge = await badgeRepository.updateBadge(badgeId, validation.data);
+            const alertId = req.params.id;
+            await alertRepository.deleteAlert(alertId);
             return res.status(200).json({
-                message: "Badge modifié avec succès",
-                badge,
+                message: "Alert supprimé avec succès",
             });
-
         } catch (error) {
             if (error instanceof Error) {
                 let errorMessage;
@@ -136,7 +118,7 @@ export class BadgeController {
                 }
 
                 return res.status(400).json({
-                    message: "Erreur lors de la modification du badge",
+                    message: "Erreur lors de la suppression de l'alert",
                     error: errorMessage,
                 });
             }
@@ -147,12 +129,12 @@ export class BadgeController {
         }
     }
 
-    static async deleteBadge(req: Request, res: Response) {
+    static async updateDeletedAlert(req: Request, res: Response) {
         try {
-            const badgeId = req.params.id;
-            await badgeRepository.deleteBadge(badgeId);
+            const alertId = req.params.id;
+            await alertRepository.updateDeletedAlert(alertId);
             return res.status(200).json({
-                message: "Badge supprimé avec succès",
+                message: "Alert supprimé avec succès",
             });
         } catch (error) {
             if (error instanceof Error) {
@@ -164,7 +146,7 @@ export class BadgeController {
                 }
 
                 return res.status(400).json({
-                    message: "Erreur lors de la suppression du badge",
+                    message: "Erreur lors de la suppression de l'alert",
                     error: errorMessage,
                 });
             }
@@ -174,33 +156,4 @@ export class BadgeController {
             });
         }
     }
-
-    static async updateDeletedBadge(req: Request, res: Response) {
-        try {
-            const badgeId = req.params.id;
-            await badgeRepository.updateDeletedBadge(badgeId);
-            return res.status(200).json({
-                message: "Badge supprimé avec succès",
-            });
-        } catch (error) {
-            if (error instanceof Error) {
-                let errorMessage;
-                try {
-                    errorMessage = JSON.parse(error.message);
-                } catch {
-                    errorMessage = error.message;
-                }
-
-                return res.status(400).json({
-                    message: "Erreur lors de la suppression du badge",
-                    error: errorMessage,
-                });
-            }
-
-            return res.status(500).json({
-                message: "Erreur interne du serveur",
-            });
-        }
-    }
-
 }   

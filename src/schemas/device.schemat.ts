@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { AccessLevel } from "../models/device.model";
 
 export const deviceSchema = z.object({
     nom: z.string({
@@ -20,8 +21,15 @@ export const deviceSchema = z.object({
         required_error: 'La localisation du device est obligatoire',
     })
     .trim(),
-    access_level: z.enum(['admin', 'security', 'user', 'any'],{
-        message: 'Le niveau d\'access du device est obligatoire',
-        required_error: 'Le niveau d\'access du device est obligatoire',
-    }),
+    access_level: z.enum([
+        AccessLevel.admin,
+        AccessLevel.user,
+        AccessLevel.security,
+        AccessLevel.all
+    ],{
+        message: 'L\'access_level du device est obligatoire',
+        required_error: 'L\'access_level du device est obligatoire',
+    })
+    .optional()
+    .default(AccessLevel.all),
 });

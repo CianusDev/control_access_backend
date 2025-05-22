@@ -50,4 +50,34 @@ export class AccessLogRepository {
             throw new Error("AccessLog not found");
         }
     }
+
+    async getUserInfoByBadgeUid(badge_uid: string): Promise<any> {
+        const result = await query(
+            `SELECT * FROM users WHERE id = (SELECT user_id FROM badges WHERE uid = $1)`,
+            [badge_uid]
+        );
+        return result.rows[0];
+    }
+
+    async updateDeletedAccessLog(id: string): Promise<void> {
+        const accessLogExistsResult = await query(
+            `SELECT * FROM access_logs WHERE id = $1`,
+            [id]
+        );
+
+        const existingAccessLog = accessLogExistsResult.rows[0] as AccessLog;
+
+        if (!existingAccessLog) {
+            throw new Error("AccessLog not found");
+        }
+        
+        const result = await query(
+            `UPDATE access_logs SET is_deleted = true WHERE id = $1`,
+            [id]
+        );
+
+        if (result.rowCount === 0) {
+            throw new Error("AccessLog not found");
+        }
+    }
 }

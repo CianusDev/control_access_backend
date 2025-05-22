@@ -1,12 +1,21 @@
-
-import { UserController } from '../../controllers/user.controller';
-import { auth } from '../../middlewares/auth.middleware';
+import { UserController } from '../controllers/user.controller';
+import { auth } from '../middlewares/auth.middleware';
 import express from 'express';
 const router = express.Router();
 
 // Route pour la récupération des informations d'un utilisateur
 router.get('/me', auth , async(req, res) => {
     UserController.getUser(req, res)
+});
+
+// Route pour la récupération de tous les utilisateurs
+router.get('/', auth , async(req, res) => {
+    UserController.getUsers(req, res)
+});
+
+// Route pour la récupération d'un utilisateur
+router.get('/:id', auth , async(req, res) => {
+    UserController.getUserById(req, res)
 });
 
 // Route pour la création d'un utilisateur

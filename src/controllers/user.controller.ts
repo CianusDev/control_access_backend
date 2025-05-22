@@ -43,14 +43,13 @@ export class UserController {
             });
         }
     }
-    
-    // Route pour la modification d'un utilisateur
+
     static async updateUser(req: Request, res: Response) {
         try {
             const userId = req.params.id;
             const body = req.body 
             const validation = userSchema.safeParse(body);
-
+            console.log({userId, body, validation})
             if (!validation.success) {
                 return res.status(400).json({
                     message: "Erreur lors de la validation du user (update)",
@@ -140,5 +139,85 @@ export class UserController {
             });
         }
     }
-    
+
+    static async getUsers(req: Request, res: Response) {
+        try {
+            const users = await userRepository.getUsers();
+            return res.status(200).json({
+                message:"Utilisateurs récupérés avec succès",
+                users: users,
+            });
+        } catch (error) {
+            if (error instanceof Error) {
+                let errorMessage;
+                try {
+                    errorMessage = JSON.parse(error.message);
+                } catch {
+                    errorMessage = error.message;
+                }
+
+                return res.status(400).json({
+                    message: "Erreur lors de la récupération des utilisateurs",
+                    error: errorMessage,
+                });
+            }
+        }
+    }   
+
+    static async getUserById(req: Request & { user?: any }, res: Response) {
+        try {
+            const userId = req.params.id;
+            const user = await userRepository.getUser(userId);
+            return res.status(200).json({
+                message: "Utilisateur récupéré avec succès",
+                user,
+            });
+        } catch (error) {
+            if (error instanceof Error) {
+                let errorMessage;
+                try {
+                    errorMessage = JSON.parse(error.message);
+                } catch {
+                    errorMessage = error.message;
+                }
+
+                return res.status(400).json({
+                    message: "Erreur lors de la récupération de l'utilisateur",
+                    error: errorMessage,
+                });
+            }
+
+            return res.status(500).json({
+                message: "Erreur interne du serveur",
+            });
+        }
+    }
+
+    static async updateDeletedUser(req: Request, res: Response) {
+        try {
+            const userId = req.params.id;
+            await userRepository.updateDeletedUser(userId);
+            return res.status(200).json({
+                message: "Utilisateur supprimé avec succès",
+            });
+        } catch (error) {
+            if (error instanceof Error) {
+                let errorMessage;
+                try {
+                    errorMessage = JSON.parse(error.message);
+                } catch {
+                    errorMessage = error.message;
+                }
+
+                return res.status(400).json({
+                    message: "Erreur lors de la suppression de l'utilisateur",
+                    error: errorMessage,
+                });
+            }
+
+            return res.status(500).json({
+                message: "Erreur interne du serveur",
+            });
+        }
+    }
 }

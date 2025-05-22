@@ -1,4 +1,4 @@
 export interface Role {
-  id: string; // UUID
+  id: string; 
   name:'root' |'admin' | 'security' | 'user';
 }

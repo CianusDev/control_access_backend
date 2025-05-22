@@ -37,16 +37,9 @@ export class AuthRepository {
         const token = createUserToken(user.id, process.env.JWT_SECRET!);
 
         return {
-            id: user.id,
-            username: user.username,
-            password_hashed: user.password_hashed,
-            email: user.email,
-            firstname: user.firstname,
-            lastname: user.lastname,
-            created_at: user.created_at,
-            updated_at: user.updated_at,
             token,
-        };
+            ...user,
+        } as User;
     }
 
     async getCurrentUser(id: string): Promise<User | null> {
@@ -61,15 +54,6 @@ export class AuthRepository {
             return null;
         }
 
-        return {
-            id: user.id,
-            username: user.username,
-            password_hashed: user.password_hashed,
-            email: user.email,
-            firstname: user.firstname,
-            lastname: user.lastname,
-            created_at: user.created_at,
-            updated_at: user.updated_at,
-        };
+        return user as User;
     }
 }

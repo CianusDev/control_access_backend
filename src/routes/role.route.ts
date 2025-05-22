@@ -1,5 +1,5 @@
-import { RoleController } from "../../controllers/role.controller";
-import { auth } from "../../middlewares/auth.middleware";
+import { RoleController } from "../controllers/role.controller";
+import { auth } from "../middlewares/auth.middleware";
 import express from 'express';
 const router = express.Router();
 
