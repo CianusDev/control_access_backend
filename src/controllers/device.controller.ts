@@ -8,14 +8,18 @@ export class DeviceController {
 
     static async getDevices(req: Request, res: Response) {
         try {
-            const devices = await deviceRepository.getDevices();
+            const limit = Math.max(1, parseInt(req.query.limit as string) || 20);
+            const page = Math.max(1, parseInt(req.query.page as string) || 1);
+            const offset = (page - 1) * limit;
+            const devices = await deviceRepository.getDevices(limit, offset);
 
             if (devices === null) {
                 res.status(500).json({ message: 'Erreur serveur' });
             } else {
                 res.status(200).json({
-                    message:"Devices récupérés avec succès",
-                    devices
+                    message: "Dispositifs récupérés avec succès",
+                    devices,
+                    pagination: { limit, page, offset }
                 });
             }
         } catch (error) {
@@ -42,7 +46,9 @@ export class DeviceController {
         if (device === null) {
             res.status(404).json({ message: 'Device not found' });
         } else {
-            res.status(200).json(device);
+            res.status(200).json({
+                device
+            });
         }
         } catch (error) {
             if (error instanceof Error) {
@@ -111,7 +117,7 @@ export class DeviceController {
         try {
             const deviceId = req.params.id;
             const body = req.body 
-            const validation = deviceSchema.safeParse(body);
+            const validation = deviceSchema.partial().safeParse(body);
             if (!validation.success) {
                 return res.status(400).json({
                     message: "Erreur lors de la validation du device",
@@ -167,62 +173,6 @@ export class DeviceController {
         }
     }
 
-    static async checkAccess(req: Request, res: Response) {
-        try {
-            const deviceId = req.params.id;
-            const badge_uid = req.params.badge_uid;
-            const access = await deviceRepository.checkAccess(deviceId, badge_uid);
-            return res.status(200).json({
-                message: "Access checked",
-                access,
-            });
-        } catch (error) {
-            if (error instanceof Error) {
-                let errorMessage;
-                try {
-                    errorMessage = JSON.parse(error.message);
-                } catch {
-                    errorMessage = error.message;
-                }
 
-                return res.status(400).json({
-                    message: "Erreur lors de la vérification de l'accès",
-                    error: errorMessage,
-                });
-            }
-
-            return res.status(500).json({
-                message: "Erreur interne du serveur",
-            });
-        }
-    }
-
-    static async updateDeletedDevice(req: Request, res: Response) {
-        try {
-            const deviceId = req.params.id;
-            await deviceRepository.updateDeletedDevice(deviceId);
-            return res.status(200).json({
-                message: "Device supprimé avec succès",
-            });
-        } catch (error) {
-            if (error instanceof Error) {
-                let errorMessage;
-                try {
-                    errorMessage = JSON.parse(error.message);
-                } catch {
-                    errorMessage = error.message;
-                }
-
-                return res.status(400).json({
-                    message: "Erreur lors de la suppression du device",
-                    error: errorMessage,
-                });
-            }
-
-            return res.status(500).json({
-                message: "Erreur interne du serveur",
-            });
-        }
-    }
 
 }               

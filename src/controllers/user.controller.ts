@@ -1,6 +1,8 @@
 import { UserRepository } from "../repositories/user.repository";
 import { Request, Response } from "express";
-import { userSchema } from "../schemas/user.schema";
+import { userSchema, userUpdateSchema } from "../schemas/user.schema";
+import { generateUniqueCode } from "../utils/utils";
+import { sendEmail } from "../utils/emailSender";
 
 const userRepository = new UserRepository();
 
@@ -8,38 +10,35 @@ export class UserController {
 
     static async createUser(req: Request, res: Response) {
         try {
-            const body = req.body 
-            const validation = userSchema.safeParse(body);
+            const pin = generateUniqueCode();
+            const validation = userSchema.safeParse(req.body);
             if (!validation.success) {
                 return res.status(400).json({
-                    message: "Erreur lors de la validation du user (create)",
+                    message: "Erreur de validation des données utilisateur",
                     error: validation.error.flatten().fieldErrors,
                 });
             }
-            
-            const user = await userRepository.createUser(validation.data);
+            const user = await userRepository.createUser({
+                ...validation.data,
+                pin,
+            });
+
+            await sendEmail(user.email,`Nouvelle utilisateur creer`,
+                `
+                <h1>Bienvenue ${user.nom} ${user.prenom} </h1>
+                <p>Voici votre code pin : ${pin} </p>
+                `
+            )
             return res.status(201).json({
                 message: "Utilisateur créé avec succès",
                 user,
             });
-
         } catch (error) {
-            if (error instanceof Error) {
-                let errorMessage;
-                try {
-                    errorMessage = JSON.parse(error.message);
-                } catch {
-                    errorMessage = error.message;
-                }
-
-                return res.status(400).json({
-                    message: "Erreur lors de la création de l'utilisateur",
-                    error: errorMessage,
-                });
-            }
-
-            return res.status(500).json({
-                message: "Erreur interne du serveur",
+            let errorMessage = error instanceof Error ? error.message : error;
+            try { errorMessage = JSON.parse(errorMessage as string); } catch {}
+            return res.status(400).json({
+                message: "Erreur lors de la création de l'utilisateur",
+                error: errorMessage,
             });
         }
     }
@@ -47,38 +46,24 @@ export class UserController {
     static async updateUser(req: Request, res: Response) {
         try {
             const userId = req.params.id;
-            const body = req.body 
-            const validation = userSchema.safeParse(body);
-            console.log({userId, body, validation})
+            const validation = userUpdateSchema.safeParse(req.body);
             if (!validation.success) {
                 return res.status(400).json({
-                    message: "Erreur lors de la validation du user (update)",
+                    message: "Erreur de validation des données utilisateur (update)",
                     error: validation.error.flatten().fieldErrors,
                 });
             }
-
             const user = await userRepository.updateUser(userId, validation.data);
             return res.status(200).json({
                 message: "Utilisateur modifié avec succès",
                 user,
             });
         } catch (error) {
-            if (error instanceof Error) {
-                let errorMessage;
-                try {
-                    errorMessage = JSON.parse(error.message);
-                } catch {
-                    errorMessage = error.message;
-                }
-
-                return res.status(400).json({
-                    message: "Erreur lors de la modification de l'utilisateur",
-                    error: errorMessage,
-                });
-            }
-
-            return res.status(500).json({
-                message: "Erreur interne du serveur",
+            let errorMessage = error instanceof Error ? error.message : error;
+            try { errorMessage = JSON.parse(errorMessage as string); } catch {}
+            return res.status(400).json({
+                message: "Erreur lors de la modification de l'utilisateur",
+                error: errorMessage,
             });
         }
     }
@@ -91,27 +76,16 @@ export class UserController {
                 message: "Utilisateur supprimé avec succès",
             });
         } catch (error) {
-            if (error instanceof Error) {
-                let errorMessage;
-                try {
-                    errorMessage = JSON.parse(error.message);
-                } catch {
-                    errorMessage = error.message;
-                }
-
-                return res.status(400).json({
-                    message: "Erreur lors de la suppression de l'utilisateur",
-                    error: errorMessage,
-                });
-            }
-
-            return res.status(500).json({
-                message: "Erreur interne du serveur",
+            let errorMessage = error instanceof Error ? error.message : error;
+            try { errorMessage = JSON.parse(errorMessage as string); } catch {}
+            return res.status(400).json({
+                message: "Erreur lors de la suppression de l'utilisateur",
+                error: errorMessage,
             });
         }
     }
 
-    static async getUser(req: Request & { user?: any }, res: Response) {
+    static async getUser(req: Request, res: Response) {
         try {
             const userId = req.params.id;
             const user = await userRepository.getUser(userId);
@@ -120,103 +94,32 @@ export class UserController {
                 user,
             });
         } catch (error) {
-            if (error instanceof Error) {
-                let errorMessage;
-                try {
-                    errorMessage = JSON.parse(error.message);
-                } catch {
-                    errorMessage = error.message;
-                }
-
-                return res.status(400).json({
-                    message: "Erreur lors de la récupération de l'utilisateur",
-                    error: errorMessage,
-                });
-            }
-
-            return res.status(500).json({
-                message: "Erreur interne du serveur",
+            let errorMessage = error instanceof Error ? error.message : error;
+            try { errorMessage = JSON.parse(errorMessage as string); } catch {}
+            return res.status(400).json({
+                message: "Erreur lors de la récupération de l'utilisateur",
+                error: errorMessage,
             });
         }
     }
 
     static async getUsers(req: Request, res: Response) {
         try {
-            const users = await userRepository.getUsers();
+            const limit = Math.max(1, parseInt(req.query.limit as string) || 20);
+            const page = Math.max(1, parseInt(req.query.page as string) || 1);
+            const offset = (page - 1) * limit;
+            const users = await userRepository.getUsers(limit, offset);
             return res.status(200).json({
-                message:"Utilisateurs récupérés avec succès",
-                users: users,
+                message: "Utilisateurs récupérés avec succès",
+                users,
+                pagination: { limit, page, offset }
             });
         } catch (error) {
-            if (error instanceof Error) {
-                let errorMessage;
-                try {
-                    errorMessage = JSON.parse(error.message);
-                } catch {
-                    errorMessage = error.message;
-                }
-
-                return res.status(400).json({
-                    message: "Erreur lors de la récupération des utilisateurs",
-                    error: errorMessage,
-                });
-            }
-        }
-    }   
-
-    static async getUserById(req: Request & { user?: any }, res: Response) {
-        try {
-            const userId = req.params.id;
-            const user = await userRepository.getUser(userId);
-            return res.status(200).json({
-                message: "Utilisateur récupéré avec succès",
-                user,
-            });
-        } catch (error) {
-            if (error instanceof Error) {
-                let errorMessage;
-                try {
-                    errorMessage = JSON.parse(error.message);
-                } catch {
-                    errorMessage = error.message;
-                }
-
-                return res.status(400).json({
-                    message: "Erreur lors de la récupération de l'utilisateur",
-                    error: errorMessage,
-                });
-            }
-
-            return res.status(500).json({
-                message: "Erreur interne du serveur",
-            });
-        }
-    }
-
-    static async updateDeletedUser(req: Request, res: Response) {
-        try {
-            const userId = req.params.id;
-            await userRepository.updateDeletedUser(userId);
-            return res.status(200).json({
-                message: "Utilisateur supprimé avec succès",
-            });
-        } catch (error) {
-            if (error instanceof Error) {
-                let errorMessage;
-                try {
-                    errorMessage = JSON.parse(error.message);
-                } catch {
-                    errorMessage = error.message;
-                }
-
-                return res.status(400).json({
-                    message: "Erreur lors de la suppression de l'utilisateur",
-                    error: errorMessage,
-                });
-            }
-
-            return res.status(500).json({
-                message: "Erreur interne du serveur",
+            let errorMessage = error instanceof Error ? error.message : error;
+            try { errorMessage = JSON.parse(errorMessage as string); } catch {}
+            return res.status(400).json({
+                message: "Erreur lors de la récupération des utilisateurs",
+                error: errorMessage,
             });
         }
     }

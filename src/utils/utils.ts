@@ -48,11 +48,12 @@ export const comparePassword = async (password: string, hashedPassword: string):
 export const createUserToken = (
     userId: string,
     secret: string,
-    expiresIn: StringValue = '24h'
+    expiresIn: StringValue = '12h',
+    roleId:string,
 ): string => {
     try {
         const options: SignOptions = { expiresIn };
-        return jwt.sign({ userId }, secret, options);
+        return jwt.sign({ userId, roleId }, secret, options);
     } catch (error) {
         throw new Error('Erreur lors de la création du token');
     }
@@ -62,12 +63,12 @@ export const createUserToken = (
  * Vérifie la validité d'un token JWT
  * @param token - Le token à vérifier
  * @param secret - La clé secrète utilisée pour signer le token
- * @returns L'ID de l'utilisateur si le token est valide, sinon null
+ * @returns L'ID de l'utilisateur et le rôle si le token est valide, sinon null
  */
-export const verifyUserToken = (token: string, secret: string): string | null => {
+export const verifyUserToken = (token: string, secret: string): { userId: string, roleId: string } | null => {
     try {
-        const decoded = jwt.verify(token, secret) as { userId: string };
-        return decoded.userId;
+        const decoded = jwt.verify(token, secret) as { userId: string, roleId: string };
+        return decoded;
     } catch (error) {
         return null;
     }   
@@ -83,4 +84,23 @@ export const generateRandomPassword = () => {
         result += characters.charAt(Math.floor(Math.random() * characters.length));
     }
     return result;
+}
+
+
+const CHARSET = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D'];
+const generatedCodes = new Set<string>();
+
+export function generateUniqueCode(length = 8): string {
+  let code: string;
+
+  do {
+    code = '';
+    for (let i = 0; i < length; i++) {
+      const randIndex = Math.floor(Math.random() * CHARSET.length);
+      code += CHARSET[randIndex];
+    }
+  } while (generatedCodes.has(code));
+
+  generatedCodes.add(code);
+  return code;
 }

@@ -1,11 +1,17 @@
 import { Request, Response, NextFunction } from 'express';
 import { verifyUserToken } from '../utils/utils';
+import { query } from '../config/database';
+import { UserStatus } from '../models/user.model';
 
-interface AuthRequest extends Request {
-    user?: any;
+export interface AuthRequest extends Request {
+    user?: {
+        userId: string;
+        roleId: string;
+    };
 }
 
-export const auth = (req: AuthRequest, res: Response, next: NextFunction) => {
+// Middleware pour vérifier si l'utilisateur est authentifié
+export const auth = async(req: AuthRequest, res: Response, next: NextFunction) => {
     try {
         const token = req.header('Authorization')?.replace('Bearer ', '');
 
@@ -15,7 +21,31 @@ export const auth = (req: AuthRequest, res: Response, next: NextFunction) => {
 
         const decoded = verifyUserToken(token, process.env.JWT_SECRET!);
 
-        req.user= decoded;
+        // console.log('decoded', decoded);
+
+        if(!decoded) {
+            res.status(401).json({ message: 'Authorisation requise' });
+            return;
+        }
+
+        const { userId, roleId } = decoded;
+
+        const userResult = await query(
+            `SELECT * FROM utilisateurs WHERE id = $1`,
+            [userId]
+        );
+
+        if (!userResult.rows[0]) {
+            res.status(401).json({ message: 'Authentification requise' });
+            return;
+        }
+
+        if (userResult.rows[0].statut !== UserStatus.actif) {
+            res.status(403).json({ message: 'Compte inactif, suspendu ou banni' });
+            return;
+        }
+        
+        req.user = { userId, roleId };
 
         next();
 

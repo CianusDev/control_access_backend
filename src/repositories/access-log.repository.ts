@@ -3,81 +3,59 @@ import { query } from "../config/database";
 import { AccessLog } from "../models/access-log.model";
 import { accessLogSchema } from "../schemas/access-log.schema";
 
-
 export class AccessLogRepository {
-
-    async getAccessLogs(): Promise<AccessLog[]|null> {
+    async getAccessLogs(limit = 20, offset = 0): Promise<AccessLog[]> {
         const result = await query(
-            `SELECT * FROM access_logs`
+            `SELECT * FROM logs_acces ORDER BY id LIMIT $1 OFFSET $2`,
+            [limit, offset]
         );
-
         return result.rows as AccessLog[];
     }
 
-    async getAccessLog(id: string): Promise<AccessLog|null> {
+    async getAccessLog(id: string): Promise<AccessLog | null> {
         const result = await query(
-            `SELECT * FROM access_logs WHERE id = $1`,
+            `SELECT * FROM logs_acces WHERE id = $1`,
             [id]
         );
-
-        return result.rows[0] as AccessLog;
+        return result.rows[0] as AccessLog || null;
     }
 
-    async createAccessLog(payload: z.infer<typeof accessLogSchema>): Promise<AccessLog|null> {
-        const result = await query( 
-            `INSERT INTO access_logs (badge_uid, device_id, access_status) VALUES ($1, $2, $3) RETURNING *`,
-            [payload.badge_uid, payload.device_id, payload.access_status]
-        );
-
-        return result.rows[0] as AccessLog;
-    }
-
-    async updateAccessLog(id: string, payload: z.infer<typeof accessLogSchema>): Promise<AccessLog|null> {
+    async createAccessLog(payload: z.infer<typeof accessLogSchema>): Promise<AccessLog> {
         const result = await query(
-            `UPDATE access_logs SET badge_uid = $1, device_id = $2, access_status = $3 WHERE id = $4`,
-            [payload.badge_uid, payload.device_id, payload.access_status, id]
-        );  
+            `INSERT INTO logs_acces (utilisateur_id, badge_id, dispositif_id, type_tentative, resultat, uid_rfid_tente, adresse_ip, details, timestamp)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
+            [payload.utilisateur_id, payload.badge_id, payload.dispositif_id, payload.type_tentative, payload.resultat, payload.uid_rfid_tente, payload.adresse_ip, payload.details, payload.timestamp]
+        );
+        return result.rows[0] as AccessLog;
+    }
+
+    async updateAccessLog(id: string, payload: Partial<z.infer<typeof accessLogSchema>>): Promise<AccessLog | null> {
+        const fields = [];
+        const values = [];
+        let idx = 1;
+        for (const [key, value] of Object.entries(payload)) {
+            if (value !== undefined) {
+                fields.push(`${key} = $${idx}`);
+                values.push(value);
+                idx++;
+            }
+        }
+        if (fields.length === 0) return null;
+        values.push(id);
+        const result = await query(
+            `UPDATE logs_acces SET ${fields.join(", ")} WHERE id = $${idx} RETURNING *`,
+            values
+        );
         return result.rows[0] as AccessLog;
     }
 
     async deleteAccessLog(id: string): Promise<void> {
         const result = await query(
-            `DELETE FROM access_logs WHERE id = $1`,
+            `DELETE FROM logs_acces WHERE id = $1`,
             [id]
         );
-
         if (result.rowCount === 0) {
-            throw new Error("AccessLog not found");
-        }
-    }
-
-    async getUserInfoByBadgeUid(badge_uid: string): Promise<any> {
-        const result = await query(
-            `SELECT * FROM users WHERE id = (SELECT user_id FROM badges WHERE uid = $1)`,
-            [badge_uid]
-        );
-        return result.rows[0];
-    }
-
-    async updateDeletedAccessLog(id: string): Promise<void> {
-        const accessLogExistsResult = await query(
-            `SELECT * FROM access_logs WHERE id = $1`,
-            [id]
-        );
-
-        const existingAccessLog = accessLogExistsResult.rows[0] as AccessLog;
-
-        if (!existingAccessLog) {
-            throw new Error("AccessLog not found");
-        }
-        
-        const result = await query(
-            `UPDATE access_logs SET is_deleted = true WHERE id = $1`,
-            [id]
-        );
-
-        if (result.rowCount === 0) {
-            throw new Error("AccessLog not found");
+            throw new Error("Log d'accès non trouvé");
         }
     }
 }

@@ -8,10 +8,14 @@ export class AccessLogController {
 
     static async getAccessLogs(req: Request, res: Response) {
         try {
-            const accessLogs = await accessLogRepository.getAccessLogs();
+            const limit = Math.max(1, parseInt(req.query.limit as string) || 20);
+            const page = Math.max(1, parseInt(req.query.page as string) || 1);
+            const offset = (page - 1) * limit;
+            const accessLogs = await accessLogRepository.getAccessLogs(limit, offset);
             return res.status(200).json({
-                message: "AccessLogs récupérés avec succès",
+                message: "Logs d'accès récupérés avec succès",
                 accessLogs,
+                pagination: { limit, page, offset }
             });
         } catch (error) {
             if (error instanceof Error) {
@@ -165,31 +169,4 @@ export class AccessLogController {
         }
     }
 
-    static async updateDeletedAccessLog(req: Request, res: Response) {
-        try {
-            const accessLogId = req.params.id;
-            await accessLogRepository.updateDeletedAccessLog(accessLogId);
-            return res.status(200).json({
-                message: "AccessLog supprimé avec succès",
-            });
-        } catch (error) {
-            if (error instanceof Error) {
-                let errorMessage;
-                try {
-                    errorMessage = JSON.parse(error.message);
-                } catch {
-                    errorMessage = error.message;
-                }
-
-                return res.status(400).json({
-                    message: "Erreur lors de la suppression du accessLog",
-                    error: errorMessage,
-                });
-            }
-
-            return res.status(500).json({
-                message: "Erreur interne du serveur",
-            });
-        }
-    }
 }

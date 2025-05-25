@@ -1,14 +1,28 @@
-export type AccessLog = {
-  id: string; // UUID
-  badge_uid: string; // UID RFID
-  device_id: string; // FK vers Device.id
-  access_status: AccessStatus;
-  is_deleted : boolean;
-  timestamp: Date;
+// Enums pour type_tentative et resultat_acces
+export enum AttemptType {
+    badge_seul = 'badge_seul',
+    pin_seul = 'pin_seul',
+    badge_pin = 'badge_pin',
+    inconnu = 'inconnu',
 }
 
+export enum AccessResult {
+    succes = 'succes',
+    echec_badge = 'echec_badge',
+    echec_pin = 'echec_pin',
+    echec_permission = 'echec_permission',
+    echec_horaire = 'echec_horaire',
+}
 
-export enum AccessStatus {
-  granted = 'granted',
-  denied = 'denied',
+export type AccessLog = {
+    id: string;
+    utilisateur_id?: string;
+    badge_id?: string;
+    dispositif_id: string;
+    type_tentative: AttemptType;
+    resultat: AccessResult;
+    uid_rfid_tente?: string;
+    adresse_ip?: string;
+    details?: any; // JSONB
+    timestamp: Date;
 }

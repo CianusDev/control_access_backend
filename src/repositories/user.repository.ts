@@ -1,121 +1,88 @@
 import { z } from "zod";
 import { query } from "../config/database";
-import { User } from "../models/user.model";
+import { User, UserStatus } from "../models/user.model";
 import { userSchema, userUpdateSchema } from "../schemas/user.schema";
-import { generateRandomPassword, hashPassword } from "../utils/utils";
+import { hashPassword } from "../utils/utils";
 
 export class UserRepository {
-    
-    async createUser(payload: z.infer<typeof userSchema>):Promise<User | null>{
-        
-        const { email, username, firstname, lastname, role_id } = payload;
 
-        const password =  generateRandomPassword();
+    async createUser(payload: z.infer<typeof userSchema>): Promise<User> {
+        const { nom, prenom, email, telephone, pin, password, role_id, statut, date_expiration } = payload;
 
-        const hashedPassword = await hashPassword(password);
+        const pin_hash = await hashPassword(pin!);
+
+        const password_hash = await hashPassword(password)
 
         const userExistsResult = await query(
-            `SELECT * FROM users WHERE email = $1 OR username = $2`,
-            [email, username]
+            `SELECT * FROM utilisateurs WHERE email = $1`,
+            [email]
         );
 
-        const existingUser = userExistsResult.rows[0];
-
-        if (existingUser) {
-            const errorMessages: Record<string, string> = {};
-            if (existingUser.email === email) errorMessages.email = "Email déjà utilisé";
-            if (existingUser.username === username) errorMessages.username = "Nom d'utilisateur déjà utilisé";
-            throw new Error(JSON.stringify(errorMessages));
+        if (userExistsResult.rows[0]) {
+            throw new Error("Email déjà utilisé");
         }
 
         const result = await query(
-            `INSERT INTO users (username, password_hashed, email, firstname, lastname, role_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-            [username, hashedPassword, email, firstname, lastname , role_id]
+            `INSERT INTO utilisateurs (nom, prenom, email, telephone, pin_hash, password_hash, role_id, statut, date_expiration)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
+            [nom, prenom, email, telephone, pin_hash, password_hash,  role_id, statut ?? UserStatus.actif, date_expiration]
         );
 
-        const user = result.rows[0];
-
-        return user as User;
+        return result.rows[0] as User;
     }
 
-    async updateUser(id: string, payload: z.infer<typeof userUpdateSchema>): Promise<User | null> {
-        const { email, username, firstname, lastname } = payload;
-
+    async updateUser(id: string, payload: Partial<z.infer<typeof userUpdateSchema>>): Promise<User | null> {
         const userExistsResult = await query(
-            `SELECT * FROM users WHERE id = $1`,
+            `SELECT * FROM utilisateurs WHERE id = $1`,
             [id]
         );
-
-        const existingUser = userExistsResult.rows[0];
-
-        console.log({existingUser})
-
-        if (!existingUser) {
-            throw new Error("User not found");
+        if (!userExistsResult.rows[0]) {
+            throw new Error("Utilisateur non trouvé");
         }
-
+        // Construction dynamique de la requête d'update
+        const fields = [];
+        const values = [];
+        let idx = 1;
+        for (const [key, value] of Object.entries(payload)) {
+            if (value !== undefined) {
+                fields.push(`${key} = $${idx}`);
+                values.push(value);
+                idx++;
+            }
+        }
+        
+        if (fields.length === 0) return userExistsResult.rows[0] as User;
+        values.push(id);
         const result = await query(
-            `UPDATE users SET username = $1, email = $2, firstname = $3, lastname = $4 WHERE id = $5 RETURNING *`,
-            [username, email, firstname, lastname, id]
+            `UPDATE utilisateurs SET ${fields.join(", ")} WHERE id = $${idx} RETURNING *`,
+            values
         );
-
-        const user = result.rows[0];
-
-        return user as User;
+        return result.rows[0] as User;
     }
 
     async deleteUser(id: string): Promise<void> {
         const result = await query(
-            `DELETE FROM users WHERE id = $1`,
+            `DELETE FROM utilisateurs WHERE id = $1`,
             [id]
         );
-
         if (result.rowCount === 0) {
-            throw new Error("User not found");
+            throw new Error("Utilisateur non trouvé");
         }
     }
 
     async getUser(id: string): Promise<User | null> {
         const result = await query(
-            `SELECT * FROM users WHERE id = $1`,
+            `SELECT * FROM utilisateurs WHERE id = $1`,
             [id]
         );
-
-        const user = result.rows[0];
-
-        if (!user) {
-            return null;
-        }
-
-        return user as User;
+        return result.rows[0] as User || null;
     }
 
-    async getUsers(): Promise<User[]|null> {
+    async getUsers(limit = 20, offset = 0): Promise<User[]> {
         const result = await query(
-            `SELECT * FROM users`
+            `SELECT * FROM utilisateurs ORDER BY id LIMIT $1 OFFSET $2`,
+            [limit, offset]
         );
-
-        const users = result.rows
-
-        return users as User[];
+        return result.rows as User[];
     }
-
-    async updateDeletedUser(id: string): Promise<void> {
-        const userExistsResult = await query(
-            `SELECT * FROM users WHERE id = $1`,
-            [id]
-        );
-
-        const existingUser = userExistsResult.rows[0];
-
-        if (!existingUser) {
-            throw new Error("User not found");
-        }
-        
-        await query(
-            `UPDATE users SET is_deleted = true WHERE id = $1 RETURNING *`,
-            [id]
-        );
-    }
-
 }

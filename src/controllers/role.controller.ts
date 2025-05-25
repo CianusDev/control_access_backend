@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { RoleRepository } from "../repositories/role.repository";
-import { roleSchema } from "../schemas/role.schema";
+import { roleSchema, updateRoleSchema } from "../schemas/role.schema";
 
 
 const roleRepository = new RoleRepository(); 
@@ -9,10 +9,14 @@ export class RoleController {
     
     static async getRoles(req: Request, res: Response) {
         try {
-            const roles = await roleRepository.getRoles();
+            const limit = Math.max(1, parseInt(req.query.limit as string) || 20);
+            const page = Math.max(1, parseInt(req.query.page as string) || 1);
+            const offset = (page - 1) * limit;
+            const roles = await roleRepository.getRoles(limit, offset);
             return res.status(200).json({
-                message: "Roles récupérés avec succès",
+                message: "Rôles récupérés avec succès",
                 roles,
+                pagination: { limit, page, offset }
             });
         } catch (error) {
             if (error instanceof Error) {
@@ -106,7 +110,7 @@ export class RoleController {
         try {
             const roleId = req.params.id;
             const body = req.body 
-            const validation = roleSchema.safeParse(body);
+            const validation = updateRoleSchema.safeParse(body);
             
             if (!validation.success) {
                 return res.status(400).json({

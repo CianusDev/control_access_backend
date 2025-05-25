@@ -1,16 +1,24 @@
-import { Role } from "./role.model";
+// Enums pour le statut utilisateur
+export enum UserStatus {
+    actif = 'actif',
+    inactif = 'inactif',
+    suspendu = 'suspendu',
+}
 
 export type User = {
     id: string;
-    username: string;
-    password_hashed: string;
+    nom: string;
+    prenom: string;
     email: string;
-    firstname: string;
-    lastname: string;
-    role_id: number
-    token?: string;
-    is_active: boolean;
-    is_deleted: boolean;
+    telephone?: string;
+    pin_hash: string | null;
+    password_hash: string | null;
+    role_id: string;
+    statut: UserStatus;
+    date_expiration?: Date;
+    tentatives_echec: number;
+    derniere_tentative?: Date;
+    verrouille_jusqu?: Date;
     created_at: Date;
     updated_at: Date;
 }
