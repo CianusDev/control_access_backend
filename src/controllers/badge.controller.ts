@@ -75,6 +75,7 @@ export class BadgeController {
         }
     }
 
+
     static async createBadge(req: Request, res: Response) {
         try {
             const body = req.body 

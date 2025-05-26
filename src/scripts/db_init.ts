@@ -66,7 +66,7 @@ async function setupDatabaseTables() {
         await pool.query(`DO $$
         BEGIN
             IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'resultat_acces') THEN
-                CREATE TYPE resultat_acces AS ENUM ('succes', 'echec_badge', 'echec_pin', 'echec_permission', 'echec_horaire');
+                CREATE TYPE resultat_acces AS ENUM ('succes', 'echec_badge', 'echec_pin', 'echec_permission', 'echec_horaire', 'echec_utilisateur_inactif', 'echec_inconnu');
             END IF;
         END
         $$;`);
@@ -153,7 +153,7 @@ async function setupDatabaseTables() {
         -- Table des badges RFID
         CREATE TABLE IF NOT EXISTS badges (
             id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-            uid_rfid VARCHAR(50) NOT NULL UNIQUE,
+            uid_rfid VARCHAR(255) NOT NULL UNIQUE,
             utilisateur_id UUID REFERENCES utilisateurs(id) ON DELETE SET NULL,
             statut statut_badge DEFAULT 'actif',
             date_assignation TIMESTAMP WITH TIME ZONE,

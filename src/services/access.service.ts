@@ -1,5 +1,9 @@
+import { Request } from "express";
+import { AccessResult, AttemptType } from "../models/access-log.model";
+import { Badge, BadgeStatus } from "../models/badge.model";
+import { Device, DeviceStatus } from "../models/device.model";
+import { User, UserStatus } from "../models/user.model";
 import { AccessLogRepository } from "../repositories/access-log.repository";
-import { AlertRepository } from "../repositories/alert.repository";
 import { BadgeRepository } from "../repositories/badge.repository";
 import { ConfigurationRepository } from "../repositories/configuration.repository";
 import { DeviceRepository } from "../repositories/device.repository";
@@ -7,21 +11,14 @@ import { PermissionRepository } from "../repositories/permission.repository";
 import { UserRepository } from "../repositories/user.repository";
 import { AccessAttempt } from "../schemas/access-attempt.schema";
 import { comparePassword } from "../utils/utils";
-import { Request } from "express";
-import { AccessResult, AttemptType } from "../models/access-log.model";
-import { Badge, BadgeStatus } from "../models/badge.model";
-import { Device, DeviceStatus } from "../models/device.model";
-import { User, UserStatus } from "../models/user.model";
-import { RoleRepository } from "../repositories/role.repository";
 
 const deviceRepository = new DeviceRepository();
 const badgeRepository = new BadgeRepository();
-const userRepository = new UserRepository();
+const userRepository = new UserRepository(); 
 const permissionRepository = new PermissionRepository();
 const accessLogRepository = new AccessLogRepository();
 const configurationRepository = new ConfigurationRepository();
-const alertRepository = new AlertRepository();
-const roleRepository = new RoleRepository();
+
 
 interface AccessAttemptResult {
     granted: boolean;
@@ -41,6 +38,7 @@ export class AccessService {
         try {
             // 1. Vérification du dispositif
             device = await deviceRepository.getDevice(attemptData.deviceId);
+            console.log({ deviceTrouver: device })
             if (!device) {
                 logResult = AccessResult.echec_inconnu;
                 refusalReason = "Dispositif inconnu.";
@@ -106,6 +104,7 @@ export class AccessService {
 
                 badge = await badgeRepository.getBadgeByUidRfid(attemptData.uidRfid);
 
+                console.log({ badge_uid:attemptData.uidRfid, badge })
                 if (!badge) {
                     logResult = AccessResult.echec_badge;
                     refusalReason = "Badge inconnu.";

@@ -98,7 +98,7 @@ export class UserRepository {
         const result = await query(
             `UPDATE utilisateurs 
              SET tentatives_echec = tentatives_echec + 1,
-                 date_derniere_tentative = CURRENT_TIMESTAMP
+                derniere_tentative = CURRENT_TIMESTAMP
              WHERE id = $1`,
             [userId]
         );
@@ -111,7 +111,7 @@ export class UserRepository {
         const result = await query(
             `UPDATE utilisateurs 
              SET tentatives_echec = 0,
-                 date_derniere_tentative = CURRENT_TIMESTAMP
+                derniere_tentative = CURRENT_TIMESTAMP
              WHERE id = $1`,
             [userId]
         );

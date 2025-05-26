@@ -2,7 +2,7 @@ import { z } from "zod";
 import { query } from "../config/database";
 import { Badge } from "../models/badge.model";
 import { badgeSchema } from "../schemas/badge.schema";
-import { hashPassword } from "../utils/utils";
+import { hashPassword, hashUIDRFID } from "../utils/utils";
 
 export class BadgeRepository {
     async getBadges(limit = 20, offset = 0): Promise<Badge[]> {
@@ -26,15 +26,15 @@ export class BadgeRepository {
             `SELECT * FROM badges WHERE uid_rfid = $1`,
             [payload.uid_rfid]
         );
+
         if (badgeExistsResult.rows[0]) {
             throw new Error("Badge déjà utilisé");
         }
 
-        const uid_rfid_hash = await hashPassword(payload.uid_rfid)
         const result = await query(
             `INSERT INTO badges (uid_rfid, utilisateur_id, statut, date_assignation, date_expiration, commentaire)
              VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-            [uid_rfid_hash, payload.utilisateur_id, payload.statut, payload.date_assignation, payload.date_expiration, payload.commentaire]
+            [payload.uid_rfid, payload.utilisateur_id, payload.statut, payload.date_assignation, payload.date_expiration, payload.commentaire]
         );
         return result.rows[0] as Badge;
     }
@@ -70,11 +70,11 @@ export class BadgeRepository {
     }
 
     async getBadgeByUidRfid(uid_rfid: string): Promise<Badge | null> {
-        const uid_rfid_hash = await hashPassword(uid_rfid);
         const result = await query(
             `SELECT * FROM badges WHERE uid_rfid = $1`,
-            [uid_rfid_hash]
+            [uid_rfid]
         );
+
         return result.rows[0] as Badge || null;
     }
 }

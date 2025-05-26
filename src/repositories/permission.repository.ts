@@ -62,7 +62,7 @@ export class PermissionRepository {
         const result = await query(
             `SELECT p.* FROM permissions p
             INNER JOIN roles r ON p.role_id = r.id
-            INNER JOIN users u ON u.role_id = r.id
+            INNER JOIN utilisateurs u ON u.role_id = r.id
             WHERE u.id = $1 AND p.zone_acces_id = $2
             AND p.actif = true
             AND EXTRACT(DOW FROM CURRENT_TIMESTAMP) = ANY(p.jours_semaine)

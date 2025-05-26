@@ -23,10 +23,11 @@ export class UserController {
                 pin,
             });
 
-            await sendEmail(user.email,`Nouvelle utilisateur creer`,
+            await sendEmail(user.email,`Votre compte a été crée`,
                 `
-                <h1>Bienvenue ${user.nom} ${user.prenom} </h1>
-                <p>Voici votre code pin : ${pin} </p>
+                <h1>Bienvenue ${user.nom} ${user.prenom} !</h1>
+                <p>Voici votre code PIN : ${pin} </p>
+                <p>Cordialement !</p>
                 `
             )
             return res.status(201).json({

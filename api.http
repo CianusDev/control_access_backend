@@ -1,6 +1,6 @@
 // @no-log
 
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhNTc0OWQ5Mi02ZTE5LTQ3ODctOTNjOC1lMDQ3NDZjMWY0MjgiLCJyb2xlSWQiOiJlNWZjMmNiZC0zMjM4LTQ2MmItYWRjMy01OTU2OGM4NGJhYmYiLCJpYXQiOjE3NDgyMTAxNDIsImV4cCI6MTc0ODI1MzM0Mn0.TX8TQJKuKJdtiP_03OzcOZkFwjlzQd7Ml97ILANwIxE
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ZWQ0ZTU2OS1mYzBlLTQxZTgtYTUwZS0zMjE4Y2Q5MjY5ZjYiLCJyb2xlSWQiOiJjNDM0NmUzNi00NWM3LTRhMzUtYTc2NS1mZDcwNjMxMGE0Y2EiLCJpYXQiOjE3NDgyNjA3OTAsImV4cCI6MTc0ODMwMzk5MH0.Y0nt25jt7QZHk5Dlv1ffMtyqyu9mh4jxClsrJyfEYNA
 
 
 
@@ -50,14 +50,14 @@ Authorization: Bearer {{token}}
   "prenom": "Admin",
   "email": "ujashalomtchandikou@gmail.com",
   "password": "motdepasse",
-  "role_id": "dbc7e135-98e5-492a-aad8-9cda320c1af6",
+  "role_id": "599585d7-ffac-4038-ab3c-c372f38571bb",
   "statut": "actif"
 }
 
 ###
 
 // Mettre à jour un utilisateur par ID
-PUT http://localhost:5000/api/users/bd3c5551-e3a3-4716-b45c-21ca126fd0e2
+PUT http://localhost:5000/api/users/9ad761bc-c45e-4d1c-8149-881ee16f8213
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -139,7 +139,7 @@ Authorization: Bearer {{token}}
 
 {
   "uid_rfid": "XX-XX-XX-XX",
-  "utilisateur_id": "bd3c5551-e3a3-4716-b45c-21ca126fd0e2",
+  "utilisateur_id": "9ad761bc-c45e-4d1c-8149-881ee16f8213",
   "statut": "actif",
   "date_expiration": "2025-12-31"
 }
@@ -158,7 +158,7 @@ Authorization: Bearer {{token}}
 ###
 
 // Supprimer un badge par ID
-DELETE http://localhost:5000/api/badges/a3a743ce-c7c1-4f7a-bfc5-eacd676ecaf8
+DELETE http://localhost:5000/api/badges/06a7d128-b3a5-4519-bd26-868e84f83e99
 Authorization: Bearer {{token}}
 
 ###
@@ -185,7 +185,7 @@ Authorization: Bearer {{token}}
 {
   "nom": "Nouveau Dispositif",
   "mac_address": "00:1A:2B:3C:4D:5E", 
-  "zone_acces_id": "f29aa04d-b318-4c26-af3d-cf2d187bdbcb", 
+  "zone_acces_id": "3311b748-1076-46c6-9560-44fda76aa851", 
   "statut": "en_ligne"
 }
 
@@ -338,8 +338,8 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "role_id": "3bbf6689-298c-4c27-a6c4-c73b0b175834",  
-  "zone_acces_id": "f29aa04d-b318-4c26-af3d-cf2d187bdbcb", 
+  "role_id": "599585d7-ffac-4038-ab3c-c372f38571bb",  
+  "zone_acces_id": "3311b748-1076-46c6-9560-44fda76aa851", 
   "heure_debut": "08:00:00",
   "heure_fin": "18:00:00",
   "jours_semaine": [1, 2, 3, 4, 5], 
@@ -426,3 +426,15 @@ Authorization: Bearer {{token}}
 
 // Note: La création et la suppression des sessions admin sont souvent gérées automatiquement lors du login/logout.
 // Des routes POST/DELETE directes ne sont pas toujours exposées via l'API. 
+
+// Verifier si un badge a acess a une zone donnee 
+POST http://localhost:5000/api/access
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "deviceId": "3fffd83f-70c9-485c-8488-9f72c84eb4b6",
+  "uidRfid": "XX-XX-XX-XX",
+  "pin": "38B8614CC",
+  "attemptType": "badge_pin"
+}

@@ -9,6 +9,7 @@ import AlertRoute from './routes/alert.route'
 import ZonesAccesRoute from './routes/zones-acces.route'
 import PermissionRoute from './routes/permission.route'
 import ConfigurationRoute from './routes/configuration.route'
+import AccessRoute from './routes/access.route'
 
 export const app = express();
 app.use(express.json()); // 👈 nécessaire pour parser le JSON
@@ -26,6 +27,6 @@ app.use('/api/alerts', AlertRoute);
 app.use('/api/zones-acces', ZonesAccesRoute);
 app.use('/api/permissions', PermissionRoute);
 app.use('/api/configuration', ConfigurationRoute);
-
+app.use('/api/access', AccessRoute)
 
 

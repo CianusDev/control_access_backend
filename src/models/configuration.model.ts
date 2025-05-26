@@ -1,4 +1,4 @@
-export enum TypeDonneeConfig {
+export enum TypeDataConfig {
     string = 'string',
     integer = 'integer',
     boolean = 'boolean',
@@ -10,6 +10,6 @@ export interface Configuration {
     cle: string;
     valeur: string; // Stockée comme texte, l'application la convertira au bon type
     description?: string;
-    type_donnee: TypeDonneeConfig;
+    type_donnee: TypeDataConfig;
     updated_at: Date;
 } 

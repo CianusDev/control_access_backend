@@ -20,6 +20,22 @@ export const hashPassword = async (password: string, saltRounds: number = 10): P
     }
 };
 
+export const hashUIDRFID = async (uid: string): Promise<string> => {
+    try {
+        const salt = process.env.SALT_RFID;
+        if (!salt) {
+            throw new Error('Erreur lors de la création du badge: SALT_RFID non défini');
+        }
+        const hashedPassword = await bcrypt.hash(uid, parseInt(salt));
+        return hashedPassword;
+    } catch (error) {
+        if (error instanceof Error) {
+            throw new Error(`Erreur lors de la création du badge: ${error.message}`);
+        }
+        throw new Error('Erreur lors de la création du badge');
+    }
+};
+
 
 
 /**
