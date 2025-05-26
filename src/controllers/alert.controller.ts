@@ -109,7 +109,7 @@ export class AlertController {
         try {
             const alertId = req.params.id;
             const body = req.body;  
-            const validation = alertSchema.safeParse(body);
+            const validation = alertSchema.partial().safeParse(body);
             if (!validation.success) {
                 return res.status(400).json({
                     message: "Erreur lors de la validation de l'alert",

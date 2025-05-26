@@ -5,7 +5,7 @@ export const sessionAdminSchema = z.object({
         required_error: "L'identifiant de session est requis",
         invalid_type_error: "L'identifiant doit être une chaîne de caractères"
     }),
-    utilisateur_id: z.number({
+    utilisateur_id: z.string({
         required_error: "L'utilisateur est requis",
         invalid_type_error: "L'utilisateur doit être un nombre"
     }),

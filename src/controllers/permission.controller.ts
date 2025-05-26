@@ -71,7 +71,7 @@ export class PermissionController {
     static async updatePermission(req: Request, res: Response) {
         try {
             const permissionId = req.params.id;
-            const validation = permissionSchema.safeParse(req.body);
+            const validation = permissionSchema.partial().safeParse(req.body);
             if (!validation.success) {
                 return res.status(400).json({
                     message: "Erreur de validation des données permission (update)",

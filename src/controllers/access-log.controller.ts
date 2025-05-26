@@ -108,7 +108,7 @@ export class AccessLogController {
         try {
             const accessLogId = req.params.id;
             const body = req.body 
-            const validation = accessLogSchema.safeParse(body);
+            const validation = accessLogSchema.partial().safeParse(body);
             if (!validation.success) {
                 return res.status(400).json({
                     message: "Erreur lors de la validation du accessLog",

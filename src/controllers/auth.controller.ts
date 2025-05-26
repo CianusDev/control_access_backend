@@ -34,10 +34,7 @@ export class AuthController {
             // Vérification si l'utilisateur est déjà connecté
             const session = await sessionAdminRepository.getSessionByUserId(user.id);
             if (session) {
-                // Faire expirer le token
-
-
-
+                // Supprimer la session existante
                 await sessionAdminRepository.deleteSession(session.id);
             }
 

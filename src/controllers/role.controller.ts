@@ -110,7 +110,7 @@ export class RoleController {
         try {
             const roleId = req.params.id;
             const body = req.body 
-            const validation = updateRoleSchema.safeParse(body);
+            const validation = roleSchema.partial().safeParse(body);
             
             if (!validation.success) {
                 return res.status(400).json({

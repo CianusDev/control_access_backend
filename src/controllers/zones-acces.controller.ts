@@ -71,7 +71,7 @@ export class ZoneAccesController {
     static async updateZone(req: Request, res: Response) {
         try {
             const zoneId = req.params.id;
-            const validation = zoneAccesSchema.safeParse(req.body);
+            const validation = zoneAccesSchema.partial().safeParse(req.body);
             if (!validation.success) {
                 return res.status(400).json({
                     message: "Erreur de validation des données zone d'accès (update)",

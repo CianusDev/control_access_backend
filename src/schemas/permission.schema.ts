@@ -1,11 +1,11 @@
 import { z } from "zod";
 
 export const permissionSchema = z.object({
-    role_id: z.number({
+    role_id: z.string({
         required_error: "Le rôle est requis",
         invalid_type_error: "Le rôle doit être un nombre"
     }),
-    zone_acces_id: z.number({
+    zone_acces_id: z.string({
         required_error: "La zone d'accès est requise",
         invalid_type_error: "La zone d'accès doit être un nombre"
     }),

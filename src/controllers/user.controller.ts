@@ -46,7 +46,7 @@ export class UserController {
     static async updateUser(req: Request, res: Response) {
         try {
             const userId = req.params.id;
-            const validation = userUpdateSchema.safeParse(req.body);
+            const validation = userSchema.partial().safeParse(req.body);
             if (!validation.success) {
                 return res.status(400).json({
                     message: "Erreur de validation des données utilisateur (update)",

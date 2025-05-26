@@ -57,4 +57,18 @@ export class PermissionRepository {
             throw new Error("Permission non trouvée");
         }
     }
+
+    async checkUserPermission(userId: string, zoneId: string): Promise<boolean> {
+        const result = await query(
+            `SELECT p.* FROM permissions p
+            INNER JOIN roles r ON p.role_id = r.id
+            INNER JOIN users u ON u.role_id = r.id
+            WHERE u.id = $1 AND p.zone_acces_id = $2
+            AND p.actif = true
+            AND EXTRACT(DOW FROM CURRENT_TIMESTAMP) = ANY(p.jours_semaine)
+            AND CURRENT_TIME BETWEEN p.heure_debut AND p.heure_fin`,
+            [userId, zoneId]
+        );
+        return result.rows.length > 0;
+    }
 } 

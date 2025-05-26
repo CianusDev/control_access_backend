@@ -71,7 +71,7 @@ export class ConfigurationController {
     static async updateConfiguration(req: Request, res: Response) {
         try {
             const configurationId = req.params.id;
-            const validation = configurationSchema.safeParse(req.body);
+            const validation = configurationSchema.partial().safeParse(req.body);
             if (!validation.success) {
                 return res.status(400).json({
                     message: "Erreur de validation des données configuration (update)",

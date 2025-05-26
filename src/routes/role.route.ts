@@ -19,6 +19,9 @@ const getRoleHandler : RequestHandler =  async(req, res) => {
     RoleController.getRole(req, res)
 }
 
+const getRolesHandler : RequestHandler =  async(req, res) => {
+    RoleController.getRoles(req, res)
+}
 
 
 
@@ -26,7 +29,7 @@ const getRoleHandler : RequestHandler =  async(req, res) => {
 router.post('/', auth, isAdmin, sessionMiddleware,);
 
 // récupérer tous les roles ( au moins manager )
-router.get('/', auth, isManager, sessionMiddleware, createRoleHandler);
+router.get('/', auth, isManager, sessionMiddleware, getRolesHandler);
 
 // récupérer un role ( au moins manager )
 router.get('/:id', auth, isManager, sessionMiddleware, getRoleHandler);

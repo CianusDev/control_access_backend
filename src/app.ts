@@ -25,7 +25,7 @@ app.use('/api/access-logs', AccessLogRoute);
 app.use('/api/alerts', AlertRoute);
 app.use('/api/zones-acces', ZonesAccesRoute);
 app.use('/api/permissions', PermissionRoute);
-app.use('/api/configurations', ConfigurationRoute);
+app.use('/api/configuration', ConfigurationRoute);
 
 
 

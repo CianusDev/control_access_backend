@@ -12,6 +12,9 @@ export enum AccessResult {
     echec_pin = 'echec_pin',
     echec_permission = 'echec_permission',
     echec_horaire = 'echec_horaire',
+    echec_inconnu = 'echec_inconnu',
+    echec_utilisateur_inactif = 'echec_utilisateur_inactif',
+    echec_utilisateur_verrouille = 'echec_utilisateur_verrouille',
 }
 
 export type AccessLog = {

@@ -2,9 +2,9 @@ import { z } from "zod";
 import { AttemptType, AccessResult } from "../models/access-log.model";
 
 export const accessLogSchema = z.object({
-    utilisateur_id: z.number().optional(),
-    badge_id: z.number().optional(),
-    dispositif_id: z.number({
+    utilisateur_id: z.string().optional(),
+    badge_id: z.string().optional(),
+    dispositif_id: z.string({
         required_error: "L'identifiant du dispositif est requis",
         invalid_type_error: "Le dispositif doit être un nombre"
     }),

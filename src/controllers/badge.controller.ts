@@ -116,7 +116,7 @@ export class BadgeController {
         try {
             const badgeId = req.params.id;
             const body = req.body 
-            const validation = updateBadgeSchema.safeParse(body);
+            const validation = updateBadgeSchema.partial().safeParse(body);
             if (!validation.success) {
                 return res.status(400).json({
                     message: "Erreur lors de la validation du badge",

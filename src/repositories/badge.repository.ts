@@ -68,4 +68,13 @@ export class BadgeRepository {
             throw new Error("Badge non trouvé");
         }
     }
+
+    async getBadgeByUidRfid(uid_rfid: string): Promise<Badge | null> {
+        const uid_rfid_hash = await hashPassword(uid_rfid);
+        const result = await query(
+            `SELECT * FROM badges WHERE uid_rfid = $1`,
+            [uid_rfid_hash]
+        );
+        return result.rows[0] as Badge || null;
+    }
 }

@@ -250,14 +250,13 @@ Authorization: Bearer {{token}}
   "titre": "Tentative d'intrusion détectée",
   "message": "Une tentative d'accès suspecte a été enregistrée sur le dispositif XYZ.",
   "niveau_gravite": "critical",
-  "dispositif_id": "a95c2e5c-2072-4ffd-9a4c-91ddf6ba154c", // UUID du dispositif concerné
-  "log_acces_id": "exemple_id" 
+  "dispositif_id": "a95c2e5c-2072-4ffd-9a4c-91ddf6ba154c"
 }
 
 ###
 
 // Mettre à jour une alerte par ID (par exemple, changer son statut)
-PUT http://localhost:5000/api/alerts/<ALERT_ID>
+PUT http://localhost:5000/api/alerts/51c734d3-a3ee-46d5-bb20-3cb08a285062
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -283,7 +282,7 @@ Authorization: Bearer {{token}}
 ###
 
 // Obtenir une zone d'accès par ID
-GET http://localhost:5000/api/zones-acces/<ZONE_ACCES_ID>
+GET http://localhost:5000/api/zones-acces/f29aa04d-b318-4c26-af3d-cf2d187bdbcb
 Authorization: Bearer {{token}}
 
 ###
@@ -303,12 +302,12 @@ Authorization: Bearer {{token}}
 ###
 
 // Mettre à jour une zone d'accès par ID
-PUT http://localhost:5000/api/zones-acces/<ZONE_ACCES_ID>
+PUT http://localhost:5000/api/zones-acces/f29aa04d-b318-4c26-af3d-cf2d187bdbcb
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "actif": false
+  "actif": true
 }
 
 ###
@@ -339,11 +338,11 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "role_id": "<ROLE_UUID>", // UUID du rôle
-  "zone_acces_id": "<ZONE_ACCES_UUID>", // UUID de la zone d'accès
+  "role_id": "3bbf6689-298c-4c27-a6c4-c73b0b175834",  
+  "zone_acces_id": "f29aa04d-b318-4c26-af3d-cf2d187bdbcb", 
   "heure_debut": "08:00:00",
   "heure_fin": "18:00:00",
-  "jours_semaine": [1, 2, 3, 4, 5], // Lundi à Vendredi
+  "jours_semaine": [1, 2, 3, 4, 5], 
   "actif": true
 }
 

@@ -26,11 +26,11 @@ router.get('/:id',
 });
 
 // créer une alerte 
-// router.post('/', 
-//     // auth, 
-//     async(req, res) => {
-//     AlertController.createAlert(req, res)
-// });
+router.post('/', 
+    auth, 
+    async(req, res) => {
+    AlertController.createAlert(req, res)
+});
 
 // modifier une alerte ( au moins admin)
 router.put('/:id', 

@@ -20,6 +20,14 @@ export class ConfigurationRepository {
         return result.rows[0] as Configuration || null;
     }
 
+    async getConfigurationByKey(key: string): Promise<Configuration | null> {
+        const result = await query(
+            `SELECT * FROM configuration WHERE cle = $1`,
+            [key]
+        );
+        return result.rows[0] as Configuration || null;
+    }
+
     async createConfiguration(payload: z.infer<typeof configurationSchema>): Promise<Configuration> {
         const result = await query(
             `INSERT INTO configuration (cle, valeur, description, type_donnee) VALUES ($1, $2, $3, $4) RETURNING *`,
