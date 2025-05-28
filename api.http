@@ -1,6 +1,6 @@
 // @no-log
 
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ZWQ0ZTU2OS1mYzBlLTQxZTgtYTUwZS0zMjE4Y2Q5MjY5ZjYiLCJyb2xlSWQiOiJjNDM0NmUzNi00NWM3LTRhMzUtYTc2NS1mZDcwNjMxMGE0Y2EiLCJpYXQiOjE3NDgyNjA3OTAsImV4cCI6MTc0ODMwMzk5MH0.Y0nt25jt7QZHk5Dlv1ffMtyqyu9mh4jxClsrJyfEYNA
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxN2M0ZGFlMC04NmFlLTQ0YTYtYTBhYy1iOTAyMTQ3Y2ZmOGUiLCJyb2xlSWQiOiJiZjg5MWJkNi0wNTQ2LTRhNDQtYmMzMS05ZjBiMjkyZmVkMWQiLCJpYXQiOjE3NDgzOTYwNTUsImV4cCI6MTc0ODQzOTI1NX0.2sTpaAq2FLiEQGgmByoOl45842OcbtHJ2V5sHpi-Sqg
 
 
 
@@ -50,14 +50,14 @@ Authorization: Bearer {{token}}
   "prenom": "Admin",
   "email": "ujashalomtchandikou@gmail.com",
   "password": "motdepasse",
-  "role_id": "599585d7-ffac-4038-ab3c-c372f38571bb",
+  "role_id": "e464190a-e4a9-430d-82a4-aba826536db4",
   "statut": "actif"
 }
 
 ###
 
 // Mettre à jour un utilisateur par ID
-PUT http://localhost:5000/api/users/9ad761bc-c45e-4d1c-8149-881ee16f8213
+PUT http://localhost:5000/api/users/cd0fae10-6c68-408c-b22d-40aab1e4a972
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -139,7 +139,7 @@ Authorization: Bearer {{token}}
 
 {
   "uid_rfid": "XX-XX-XX-XX",
-  "utilisateur_id": "9ad761bc-c45e-4d1c-8149-881ee16f8213",
+  "utilisateur_id": "cd0fae10-6c68-408c-b22d-40aab1e4a972",
   "statut": "actif",
   "date_expiration": "2025-12-31"
 }
@@ -147,12 +147,13 @@ Authorization: Bearer {{token}}
 ###
 
 // Mettre à jour un badge par ID
-PUT http://localhost:5000/api/badges/a3a743ce-c7c1-4f7a-bfc5-eacd676ecaf8
+PUT http://localhost:5000/api/badges/5b9dac2f-c4ca-40dc-acc6-245e31206234
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "statut": "perdu"
+  "statut": "actif",
+  "uid_rfid": "03-e3-3f-13"
 }
 
 ###
@@ -185,7 +186,7 @@ Authorization: Bearer {{token}}
 {
   "nom": "Nouveau Dispositif",
   "mac_address": "00:1A:2B:3C:4D:5E", 
-  "zone_acces_id": "3311b748-1076-46c6-9560-44fda76aa851", 
+  "zone_acces_id": "4a1d1219-e2ad-49c2-acc4-09cc7c81633d", 
   "statut": "en_ligne"
 }
 
@@ -338,9 +339,9 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "role_id": "599585d7-ffac-4038-ab3c-c372f38571bb",  
-  "zone_acces_id": "3311b748-1076-46c6-9560-44fda76aa851", 
-  "heure_debut": "08:00:00",
+  "role_id": "e464190a-e4a9-430d-82a4-aba826536db4",  
+  "zone_acces_id": "4a1d1219-e2ad-49c2-acc4-09cc7c81633d", 
+  "heure_debut": "00:00:00",
   "heure_fin": "18:00:00",
   "jours_semaine": [1, 2, 3, 4, 5], 
   "actif": true
@@ -349,12 +350,15 @@ Authorization: Bearer {{token}}
 ###
 
 // Mettre à jour une permission par ID
-PUT http://localhost:5000/api/permissions/<PERMISSION_ID>
+PUT http://localhost:5000/api/permissions/44a90501-d537-497b-8978-4827267fc910
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "actif": false
+  "actif": true,
+  "jours_semaine": [1,2,3,4,5],
+  "heure_debut": "03:00:00",
+  "heure_fin": "18:00:00"
 }
 
 ###
@@ -433,8 +437,8 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "deviceId": "3fffd83f-70c9-485c-8488-9f72c84eb4b6",
+  "deviceId": "08e7b659-cd6c-40ac-9cf2-f2d31aad21ef",
   "uidRfid": "XX-XX-XX-XX",
-  "pin": "38B8614CC",
+  "pin": "63917A52",
   "attemptType": "badge_pin"
 }

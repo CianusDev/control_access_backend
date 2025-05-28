@@ -11,6 +11,8 @@ import { PermissionRepository } from "../repositories/permission.repository";
 import { UserRepository } from "../repositories/user.repository";
 import { AccessAttempt } from "../schemas/access-attempt.schema";
 import { comparePassword } from "../utils/utils";
+import { connectedDevices } from "./../server";
+import WebSocket from "ws";
 
 const deviceRepository = new DeviceRepository();
 const badgeRepository = new BadgeRepository();
@@ -42,15 +44,16 @@ export class AccessService {
             if (!device) {
                 logResult = AccessResult.echec_inconnu;
                 refusalReason = "Dispositif inconnu.";
-                const log = await accessLogRepository.createAccessLog({
-                    dispositif_id: attemptData.deviceId,
-                    type_tentative: attemptData.attemptType,
-                    resultat: logResult,
-                    uid_rfid_tente: attemptData.uidRfid,
-                    adresse_ip: req.ip,
-                    details: { reason: refusalReason },
-                });
-                return { granted: false, reason: refusalReason, logId: log.id };
+                // const log = await accessLogRepository.createAccessLog({
+                //     dispositif_id: attemptData.deviceId,
+                //     type_tentative: attemptData.attemptType,
+                //     resultat: logResult,
+                //     uid_rfid_tente: attemptData.uidRfid,
+                //     adresse_ip: req.ip,
+                //     details: { reason: refusalReason },
+                // });
+                console.error(`Tentative d'accès échouée: Dispositif inconnu ID ${attemptData.deviceId}.`)
+                return { granted: false, reason: refusalReason, logId: "" };
             }
 
             if (device.statut !== DeviceStatus.en_ligne) {
@@ -303,6 +306,17 @@ export class AccessService {
                 adresse_ip: req.ip,
                 details: { message: "Accès accordé avec succès" },
             });
+
+            // --- Ajout pour WebSocket ---
+            const deviceWebSocket = connectedDevices.get(device.id);
+            if (deviceWebSocket && deviceWebSocket.readyState === WebSocket.OPEN) {
+                const command = { command: "open" }; // La commande à envoyer
+                deviceWebSocket.send(JSON.stringify(command));
+                console.log(`Commande 'open' envoyée au dispositif ${device.id} via WebSocket.`);
+            } else {
+                console.warn(`Dispositif ${device.id} non connecté via WebSocket. Impossible d'envoyer la commande.`);
+            }
+            // --- Fin de l'ajout pour WebSocket ---
 
             return { granted: true, reason: "Accès accordé", logId: successLog.id };
 

@@ -18,8 +18,6 @@ export const userSchema = z.object({
         invalid_type_error: "L'email doit être une chaîne de caractères"
     }).email(),
 
-    telephone: z.string().optional(),
-
     pin: z.string({
         required_error: "Le PIN est requis",
         invalid_type_error: "Le PIN doit être une chaîne de caractères"

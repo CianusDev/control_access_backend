@@ -20,6 +20,7 @@ async function setupDatabaseTables() {
             DROP TABLE IF EXISTS utilisateurs CASCADE;
             DROP TABLE IF EXISTS configuration CASCADE;
             DROP TABLE IF EXISTS roles CASCADE;
+            
         `);
 
         await pool.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
@@ -126,7 +127,6 @@ async function setupDatabaseTables() {
             nom VARCHAR(100) NOT NULL,
             prenom VARCHAR(100) NOT NULL,
             email VARCHAR(150) UNIQUE NOT NULL,
-            telephone VARCHAR(20),
             pin_hash VARCHAR(255), -- Hash sécurisé du PIN (peut être NULL si non utilisé pour dashboard)
             password_hash VARCHAR(255), -- Hash sécurisé du mot de passe (peut être NULL si pas admin)
             role_id UUID NOT NULL REFERENCES roles(id),

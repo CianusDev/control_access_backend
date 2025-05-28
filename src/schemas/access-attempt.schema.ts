@@ -6,7 +6,8 @@ export const accessAttemptSchema = z.object({
     uidRfid: z.string({
         required_error:"L'identifiant du badge est requis",
         invalid_type_error:"L'identifiant du badge invalide"
-    }), // UID du badge, optionnel si attemptType est pin_seul
+    })
+    .trim(), // UID du badge, optionnel si attemptType est pin_seul
     pin: z.string().optional(), // PIN, optionnel si attemptType est badge_seul
     attemptType: z.nativeEnum(AttemptType, { // Le type de tentative
         required_error: "Le type de tentative est requis",

@@ -10,7 +10,6 @@ export type User = {
     nom: string;
     prenom: string;
     email: string;
-    telephone?: string;
     pin_hash: string | null;
     password_hash: string | null;
     role_id: string;

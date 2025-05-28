@@ -5,7 +5,9 @@ export const badgeSchema = z.object({
     uid_rfid: z.string({
         required_error: "L'UID RFID est requis",
         invalid_type_error: "L'UID doit être une chaîne de caractères"
-    }).min(3),
+    })
+    .min(3)
+    .trim(),
     utilisateur_id: z.string().optional(),
     statut: z.nativeEnum(BadgeStatus),
     date_assignation: z.coerce.date().optional(),

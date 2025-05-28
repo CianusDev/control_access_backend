@@ -33,7 +33,6 @@ CREATE TABLE utilisateurs (
     nom VARCHAR(100) NOT NULL,
     prenom VARCHAR(100) NOT NULL,
     email VARCHAR(150) UNIQUE NOT NULL,
-    telephone VARCHAR(20),
     pin_hash VARCHAR(255) NOT NULL, -- Hash sécurisé du PIN
     password_hash VARCHAR(255) NOT NULL, -- Hash sécurisé du mot de passe
     role_id UUID NOT NULL REFERENCES roles(id),
