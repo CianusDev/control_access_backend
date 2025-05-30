@@ -4,6 +4,7 @@ export enum AttemptType {
     pin_seul = 'pin_seul',
     badge_pin = 'badge_pin',
     inconnu = 'inconnu',
+    action = 'action'
 }
 
 export enum AccessResult {
@@ -15,6 +16,14 @@ export enum AccessResult {
     echec_inconnu = 'echec_inconnu',
     echec_utilisateur_inactif = 'echec_utilisateur_inactif',
     echec_utilisateur_verrouille = 'echec_utilisateur_verrouille',
+
+    echec_actionneur_introuvable = 'echec_actionneur_introuvable',
+    echec_communication_actionneur = 'echec_communication_actionneur',
+    echec_identification_actionneur = 'echec_identification_actionneur',
+    echec_actionneur_hors_ligne = 'echec_actionneur_hors_ligne',
+    erreur_interne = 'erreur_interne'
+
+
 }
 
 export type AccessLog = {

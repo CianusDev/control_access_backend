@@ -2,9 +2,7 @@ import { z } from "zod";
 import { query } from "../config/database";
 import { Device } from "../models/device.model";
 import { deviceSchema } from "../schemas/device.schemat";
-import { Badge } from "../models/badge.model";
-import { User } from "../models/user.model";
-import { Role } from "../models/role.model";
+
 
 export class DeviceRepository {
 
@@ -30,13 +28,15 @@ export class DeviceRepository {
             `SELECT * FROM dispositifs WHERE mac_address = $1`,
             [payload.mac_address]
         );
+
         if (deviceMacResult.rows.length > 0) {
             throw new Error("L'adresse MAC du dispositif existe déjà !");
         }
+
         const result = await query(
-            `INSERT INTO dispositifs (nom, mac_address, ip_address, zone_acces_id, statut, version_firmware, derniere_connexion)
-             VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
-            [payload.nom, payload.mac_address, payload.ip_address, payload.zone_acces_id, payload.statut, payload.version_firmware, payload.derniere_connexion]
+            `INSERT INTO dispositifs (id, nom, mac_address, ip_address, zone_acces_id, statut, version_firmware, derniere_connexion,type)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
+            [payload.device_id,payload.nom, payload.mac_address, payload.ip_address, payload.zone_acces_id, payload.statut, payload.version_firmware, payload.derniere_connexion, payload.type]
         );
         return result.rows[0] as Device;
     }
@@ -76,6 +76,15 @@ export class DeviceRepository {
         if (result.rowCount === 0) {
             throw new Error("Dispositif non trouvé");
         }
+    }
+
+    // Nouvelle méthode pour trouver l'actionneur par ID de zone
+    async getActionneurByZoneId(zoneAccesId: string): Promise<Device | null> {
+        const result = await query(
+            `SELECT * FROM dispositifs WHERE zone_acces_id = $1 AND type = 'actionneur' LIMIT 1`,
+            [zoneAccesId]
+        );
+        return result.rows[0] as Device || null;
     }
 
 }

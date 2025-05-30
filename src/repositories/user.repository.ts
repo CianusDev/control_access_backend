@@ -7,7 +7,7 @@ import { hashPassword, comparePassword } from "../utils/utils";
 export class UserRepository {
 
     async createUser(payload: z.infer<typeof userSchema>): Promise<User> {
-        const { nom, prenom, email, telephone, pin, password, role_id, statut, date_expiration } = payload;
+        const { nom, prenom, email, pin, password, role_id, statut, date_expiration } = payload;
 
         const pin_hash = await hashPassword(pin!);
 
@@ -23,9 +23,9 @@ export class UserRepository {
         }
 
         const result = await query(
-            `INSERT INTO utilisateurs (nom, prenom, email, telephone, pin_hash, password_hash, role_id, statut, date_expiration)
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
-            [nom, prenom, email, telephone, pin_hash, password_hash,  role_id, statut ?? UserStatus.actif, date_expiration]
+            `INSERT INTO utilisateurs (nom, prenom, email, pin_hash, password_hash, role_id, statut, date_expiration)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
+            [nom, prenom, email, pin_hash, password_hash,  role_id, statut ?? UserStatus.actif, date_expiration]
         );
 
         return result.rows[0] as User;

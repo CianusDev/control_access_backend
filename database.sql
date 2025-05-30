@@ -11,10 +11,11 @@ CREATE TYPE statut_utilisateur AS ENUM ('actif', 'inactif', 'suspendu');
 CREATE TYPE statut_badge AS ENUM ('actif', 'inactif', 'perdu', 'vole');
 CREATE TYPE statut_dispositif AS ENUM ('en_ligne', 'hors_ligne', 'maintenance');
 CREATE TYPE type_tentative AS ENUM ('badge_seul', 'pin_seul', 'badge_pin', 'inconnu');
-CREATE TYPE resultat_acces AS ENUM ('succes', 'echec_badge', 'echec_pin', 'echec_permission', 'echec_horaire', 'echec_utilisateur_inactif', 'echec_inconnu');
+CREATE TYPE resultat_acces AS ENUM ('succes', 'echec_badge', 'echec_pin', 'echec_permission', 'echec_horaire', 'echec_utilisateur_inactif', 'echec_inconnu','echec_utilisateur_verrouille');
 CREATE TYPE type_alerte AS ENUM ('tentative_intrusion', 'badge_perdu', 'dispositif_offline', 'echecs_multiples', 'access_refuse');
 CREATE TYPE niveau_gravite AS ENUM ('info', 'warning', 'error', 'critical');
 CREATE TYPE statut_alerte AS ENUM ('nouvelle', 'vue', 'traitee', 'ignoree');
+CREATE TYPE type_dispositif AS ENUM ('client', 'actionneur');
 CREATE TYPE type_donnee_config AS ENUM ('string', 'integer', 'boolean', 'json');
 
 -- Table des rôles
@@ -81,12 +82,13 @@ CREATE TABLE zones_acces (
 
 -- Table des dispositifs ESP32
 CREATE TABLE dispositifs (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid(),
     nom VARCHAR(100) NOT NULL,
     mac_address VARCHAR(17) UNIQUE NOT NULL,
     ip_address INET,
     zone_acces_id UUID NOT NULL REFERENCES zones_acces(id),
     statut statut_dispositif DEFAULT 'hors_ligne',
+    type type_dispositif NOT NULL DEFAULT 'client',
     version_firmware VARCHAR(20),
     derniere_connexion TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -282,7 +284,6 @@ SELECT
     u.nom,
     u.prenom,
     u.email,
-    u.telephone,
     r.nom as role_nom,
     r.niveau_acces,
     u.statut,

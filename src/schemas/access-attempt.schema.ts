@@ -2,7 +2,12 @@ import { z } from "zod";
 import { AttemptType } from "../models/access-log.model";
 
 export const accessAttemptSchema = z.object({
-    deviceId: z.string().uuid("L'identifiant du dispositif doit être un UUID valide"),
+    deviceId: z.string(
+        {
+            required_error: "L'identifiant du dispositif est requis",
+            invalid_type_error:"L'identifiant du dispositif doit être une chaine de caratere"
+        }
+    ),
     uidRfid: z.string({
         required_error:"L'identifiant du badge est requis",
         invalid_type_error:"L'identifiant du badge invalide"

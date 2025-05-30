@@ -67,7 +67,7 @@ async function setupDatabaseTables() {
         await pool.query(`DO $$
         BEGIN
             IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'resultat_acces') THEN
-                CREATE TYPE resultat_acces AS ENUM ('succes', 'echec_badge', 'echec_pin', 'echec_permission', 'echec_horaire', 'echec_utilisateur_inactif', 'echec_inconnu');
+                CREATE TYPE resultat_acces AS ENUM ('succes', 'echec_badge', 'echec_pin', 'echec_permission', 'echec_horaire', 'echec_utilisateur_inactif', 'echec_inconnu','echec_utilisateur_verrouille');
             END IF;
         END
         $$;`);
@@ -109,6 +109,16 @@ async function setupDatabaseTables() {
         $$;`);
         
         console.log('✅ Type ENUM type_donnee_config créé (si nécessaire).');
+
+        // Ajout du type ENUM pour le type de dispositif
+        await pool.query(`DO $$
+        BEGIN
+            IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'type_dispositif') THEN
+                CREATE TYPE type_dispositif AS ENUM ('client', 'actionneur');
+            END IF;
+        END
+        $$;`);
+        console.log('✅ Type ENUM type_dispositif créé (si nécessaire).');
 
         const createTableQuery = `
         -- Table des rôles
@@ -165,12 +175,13 @@ async function setupDatabaseTables() {
 
         -- Table des dispositifs ESP32
         CREATE TABLE IF NOT EXISTS dispositifs (
-            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+            id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid(),
             nom VARCHAR(100) NOT NULL,
             mac_address VARCHAR(17) UNIQUE NOT NULL,
             ip_address INET,
             zone_acces_id UUID NOT NULL REFERENCES zones_acces(id),
             statut statut_dispositif DEFAULT 'hors_ligne',
+            type type_dispositif NOT NULL DEFAULT 'client',
             version_firmware VARCHAR(20),
             derniere_connexion TIMESTAMP WITH TIME ZONE,
             created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -197,7 +208,7 @@ async function setupDatabaseTables() {
             id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
             utilisateur_id UUID REFERENCES utilisateurs(id) ON DELETE SET NULL,
             badge_id UUID REFERENCES badges(id) ON DELETE SET NULL,
-            dispositif_id UUID NOT NULL REFERENCES dispositifs(id),
+            dispositif_id VARCHAR(255) NOT NULL REFERENCES dispositifs(id),
             type_tentative type_tentative NOT NULL,
             resultat resultat_acces NOT NULL,
             uid_rfid_tente VARCHAR(50),
@@ -214,7 +225,7 @@ async function setupDatabaseTables() {
             message TEXT NOT NULL,
             niveau_gravite niveau_gravite DEFAULT 'info',
             utilisateur_id UUID REFERENCES utilisateurs(id) ON DELETE SET NULL,
-            dispositif_id UUID REFERENCES dispositifs(id) ON DELETE SET NULL,
+            dispositif_id VARCHAR(255) REFERENCES dispositifs(id) ON DELETE SET NULL,
             log_acces_id UUID REFERENCES logs_acces(id) ON DELETE SET NULL,
             statut statut_alerte DEFAULT 'nouvelle',
             assignee_admin_id UUID REFERENCES utilisateurs(id) ON DELETE SET NULL,

@@ -1,7 +1,11 @@
 import { z } from "zod";
-import { DeviceStatus } from "../models/device.model";
+import { DeviceStatus, DeviceType } from "../models/device.model";
 
 export const deviceSchema = z.object({
+    device_id:z.string({
+        required_error: "L'ID du dispositif est requis",
+        invalid_type_error: "L'ID doit être une chaîne de caractères"
+    }).min(2),
     nom: z.string({
         required_error: "Le nom du dispositif est requis",
         invalid_type_error: "Le nom doit être une chaîne de caractères"
@@ -18,5 +22,6 @@ export const deviceSchema = z.object({
     statut: z.nativeEnum(DeviceStatus),
     version_firmware: z.string().optional(),
     derniere_connexion: z.coerce.date().optional(),
+    type: z.nativeEnum(DeviceType).default(DeviceType.client).optional(),
 });
 

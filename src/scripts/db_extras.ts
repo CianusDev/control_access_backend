@@ -94,7 +94,6 @@ SELECT
     u.nom,
     u.prenom,
     u.email,
-    u.telephone,
     r.nom as role_nom,
     r.niveau_acces,
     u.statut,

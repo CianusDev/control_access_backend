@@ -5,6 +5,12 @@ export enum DeviceStatus {
     maintenance = 'maintenance',
 }
 
+// Enum pour le type du dispositif
+export enum DeviceType {
+    actionneur = 'actionneur',
+    client = 'client',
+}
+
 export type Device = {
     id: string;
     nom: string;
@@ -13,6 +19,7 @@ export type Device = {
     zone_acces_id: string;
     statut: DeviceStatus;
     version_firmware?: string;
+    type: DeviceType;
     derniere_connexion?: Date;
     created_at: Date;
     updated_at: Date;
