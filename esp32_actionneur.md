@@ -5,15 +5,15 @@
 #include <ArduinoJson.h> // Inclure la bibliothèque pour gérer le JSON
 
 // Configuration du Wi-Fi
-const char* ssid = "ALHN-45B0"; // Remplacez par le nom de votre réseau Wi-Fi
-const char* password = "car chacun portera sa propre charge"; // Remplacez par le mot de passe de votre réseau Wi-Fi
+const char* ssid = "nom de votre réseau Wi-Fi"; // Remplacez par le nom de votre réseau Wi-Fi
+const char* password = "Votre mot de passe"; // Remplacez par le mot de passe de votre réseau Wi-Fi
 
 // Configuration du servomoteur
 const int SERVO_PIN = 15; // Broche GPIO pour le servomoteur
 Servo myservo; // Créer un objet Servo
 
 // Configuration du serveur WebSocket du backend
-const char* websocket_server_address = "192.168.1.66"; // Remplacez par l'adresse IP de votre backend
+const char* websocket_server_address = "IP de votre backend"; // Remplacez par l'adresse IP de votre backend
 const uint16_t websocket_server_port = 5000; // Remplacez par le port de votre serveur WebSocket
 
 WebSocketsClient webSocketClient; // Objet client WebSocket

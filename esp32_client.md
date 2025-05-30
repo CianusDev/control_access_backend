@@ -11,8 +11,8 @@
 #define JSON_BUFFER_SIZE 128       // Réduction de la taille du buffer JSON
 
 // Configuration du réseau WiFi client
-const char* ssid = "ESGIS_ZONE"; // Votre SSID
-const char* password = "groupeesgis1"; // Votre mot de passe 
+const char* ssid = "Votre SSID"; // Votre SSID
+const char* password = "Votre mot de passe"; // Votre mot de passe 
 
 #define SS_PIN 5    // SDA du RC522
 #define RST_PIN 22  // RST du RC522
