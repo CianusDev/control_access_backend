@@ -58,7 +58,7 @@ async function setupDatabaseTables() {
         await pool.query(`DO $$
         BEGIN
             IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'type_tentative') THEN
-                CREATE TYPE type_tentative AS ENUM ('badge_seul', 'pin_seul', 'badge_pin', 'inconnu');
+                CREATE TYPE type_tentative AS ENUM ('badge_seul', 'pin_seul', 'badge_pin', 'verrou', 'inconnu');
             END IF;
         END
         $$;`);
@@ -67,7 +67,24 @@ async function setupDatabaseTables() {
         await pool.query(`DO $$
         BEGIN
             IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'resultat_acces') THEN
-                CREATE TYPE resultat_acces AS ENUM ('succes', 'echec_badge', 'echec_pin', 'echec_permission', 'echec_horaire', 'echec_utilisateur_inactif', 'echec_inconnu','echec_utilisateur_verrouille');
+                CREATE TYPE resultat_acces AS ENUM (
+                'succes', 
+                'echec_badge', 
+                'echec_pin', 
+                'echec_permission', 
+                'echec_horaire', 
+                'echec_utilisateur_inactif', 
+                'echec_inconnu',
+                'echec_utilisateur_verrouille',
+                'echec_dispositif_introuvable',
+                'echec_communication_dispositif',
+                'echec_identification_dispositif',
+                'echec_dispositif_hors_ligne',
+                'echec_dispositif_erreur',
+                'erreur_interne'
+                );
+
+    
             END IF;
         END
         $$;`);

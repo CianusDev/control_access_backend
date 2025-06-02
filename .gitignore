@@ -4,3 +4,6 @@
 .env
 .vscode
 notes.md
+esp32_actionneur.md
+esp32_client.md
+rifd-card.md

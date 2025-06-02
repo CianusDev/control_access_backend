@@ -29,17 +29,10 @@ export class AccessController {
 
             const attemptData = validation.data; // Données validées
 
-            // --- Appel à la logique métier de gestion d'accès ---
-            // C'est ici que vous appellerez une fonction ou un service
-            // qui gérera toute la complexité (recherche utilisateur, badge/pin, permissions, logs, etc.)
-            // Exemple:
-             const accessResult = await accessService.processAttempt(attemptData,req);
+            const accessResult = await accessService.processAttempt(attemptData,req);
 
-            // Pour l'instant, juste un log et une réponse basique
             console.log('Received valid access attempt:', attemptData);
 
-            // La réponse dépendra du résultat de la logique métier (accès accordé ou refusé)
-            // Exemple basé sur un résultat hypothétique:
             if (accessResult.granted) {
                 return res.status(200).json({ message: "Accès accordé", logId: accessResult.logId });
             } else {

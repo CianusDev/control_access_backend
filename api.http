@@ -1,7 +1,18 @@
 // @no-log
 
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJiOTE2ZWY2Mi1mODc2LTQ5NWEtOGZlZS01NTM4NDNmM2I1MzYiLCJyb2xlSWQiOiJkYzc2ZjFkZC1lODA5LTQ4MDctYWM1Zi1lODY5YTU0OTA0NjMiLCJpYXQiOjE3NDg2MDA4OTYsImV4cCI6MTc0ODY0NDA5Nn0.yAqgcegwLJWvoYewAkYM4aUutwBQJ2vEz_4DRmPr7-8
+// ==========================================
+# ⚠️ AVERTISSEMENT ⚠️
+# Ce fichier contient des requêtes HTTP pour tester l'API.
+# Ne partagez JAMAIS ce fichier avec des tokens valides.
+# Les tokens inclus sont des exemples et ne doivent pas être utilisés en production.
+# Assurez-vous de supprimer ou de remplacer les tokens sensibles avant de partager ce fichier.
 
+// Vous devez installer l'extension "REST Client" pour tester les requêtes ci-dessous
+
+// ==========================================
+
+# Token pour l'utilisateur root
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI3MjVkMDhjNS0zZGI3LTQwZTgtYWZlMy01NWFiZWFhMWY0MmUiLCJyb2xlSWQiOiI2NjkzMGUyMy0xY2RlLTQ4NDYtODI4ZC02ZGIyOTI1YmMyMzIiLCJpYXQiOjE3NDg4Njk0MzUsImV4cCI6MTc0ODkxMjYzNX0.aEK_OzVFLYS5dhUZ1rUq76HJpU-q8xXfCrYz0nRzYaQ
 
 
 // ==========================================

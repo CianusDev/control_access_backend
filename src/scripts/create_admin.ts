@@ -6,8 +6,8 @@ import { UserStatus } from '../models/user.model';
 const adminData = {
   nom: 'User',
   prenom: 'Root',
-  email: 'root@example.com',
-  password: 'admin1234', // À remplacer par un mot de passe sécurisé
+  email: process.env.ROOT_ADMIN_EMAIL!,
+  password: process.env.ROOT_ADMIN_PASSWORD!, // À remplacer par un mot de passe sécurisé
 };
 
 async function createRootAdmin() {
