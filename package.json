@@ -6,10 +6,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
-    "start": "node dist/index.js",
-    "initdb": "ts-node-dev --transpile-only src/scripts/db_init.ts",
-    "create_admin": "ts-node-dev --respawn --transpile-only src/scripts/create_admin.ts",
-    "seeds": "ts-node-dev --transpile-only src/scripts/seeds.ts"
+    "start": "node dist/server.js",
+    "db:init": "ts-node-dev --transpile-only src/scripts/db_init.ts",
+    "db:seeds": "ts-node-dev --transpile-only src/scripts/seeds.ts"
   },
   "keywords": [],
   "author": "",

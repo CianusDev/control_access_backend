@@ -17,7 +17,13 @@ const unidentifiedPresentDevices = new Map<string, WebSocket>();
 // Création du serveur WebSocket
 const wss = new WebSocketServer({ server });
 // Création du repository pour les logs d'accès
-const  accessLogRepository = new AccessLogRepository()
+const  accessLogRepository = new AccessLogRepository();
+
+
+// if (process.env.NODE_ENV === 'production') {
+//     console.log = () => {};
+//   }
+  
 
 // Gestion des connexions WebSocket
 wss.on('connection', function connection(ws, req) {
@@ -162,7 +168,7 @@ wss.on('connection', function connection(ws, req) {
             }
         }
     });
-    
+
     // Gestion des fermetures de connexions WebSocket
     ws.on('close', function close() {
         const deviceId = (ws as any).deviceId; // ID pour connexion identifiée
@@ -203,6 +209,6 @@ wss.on('connection', function connection(ws, req) {
 });
 
 console.log('WebSocket server started ...');
-
 // Exporter les maps des dispositifs connectés et présents non identifiés
 export { connectedDevices, unidentifiedPresentDevices };
+export default app;

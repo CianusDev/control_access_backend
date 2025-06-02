@@ -195,7 +195,6 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "device_id":"v5.3.2-282-gcfea4f7c98-lucky",
   "nom": "ESP32 ACTIONNEUR",
   "mac_address": "3C:8A:1F:A3:DE:70", 
   "zone_acces_id": "ff8ee8af-bf16-42cd-bc14-64e8151de3f4", 

@@ -3,7 +3,9 @@
 /dist
 .env
 .vscode
-notes.md
-esp32_actionneur.md
-esp32_client.md
+*.md
+*.ino
 rifd-card.md
+esp32_actionneur.md
+.vercel
+vercel.json
