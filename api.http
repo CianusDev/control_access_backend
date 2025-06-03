@@ -12,9 +12,9 @@
 // ==========================================
 
 # Token pour l'utilisateur root
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI3MjVkMDhjNS0zZGI3LTQwZTgtYWZlMy01NWFiZWFhMWY0MmUiLCJyb2xlSWQiOiI2NjkzMGUyMy0xY2RlLTQ4NDYtODI4ZC02ZGIyOTI1YmMyMzIiLCJpYXQiOjE3NDg4Njk0MzUsImV4cCI6MTc0ODkxMjYzNX0.aEK_OzVFLYS5dhUZ1rUq76HJpU-q8xXfCrYz0nRzYaQ
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI3MjVkMDhjNS0zZGI3LTQwZTgtYWZlMy01NWFiZWFhMWY0MmUiLCJyb2xlSWQiOiI2NjkzMGUyMy0xY2RlLTQ4NDYtODI4ZC02ZGIyOTI1YmMyMzIiLCJpYXQiOjE3NDg5MTY0MDQsImV4cCI6MTc0ODk1OTYwNH0.7_WB6gAguiXgb4S0ESJg76IkrcAIugSOYFXVatsnw0A
 
-
+ # "3C:8A:1F:A3:DE:70", 
 // ==========================================
 POST http://localhost:5000/api/auth/login
 Content-Type: application/json
@@ -46,7 +46,7 @@ Authorization: Bearer {{token}}
 ###
 
 // Obtenir un utilisateur par ID
-GET http://localhost:5000/api/users/bd3c5551-e3a3-4716-b45c-21ca126fd0e2
+GET http://localhost:5000/api/users/38abc969-853c-44c8-8906-64c71c300817
 Authorization: Bearer {{token}}
 
 ###
@@ -58,29 +58,29 @@ Authorization: Bearer {{token}}
 
 {
   "nom": "Nouveau",
-  "prenom": "Admin",
+  "prenom": "Visiteur",
   "email": "ujashalomtchandikou@gmail.com",
   "password": "motdepasse",
-  "role_id": "66aa898f-5443-422a-b351-5b737bd230cc",
+  "role_id": "d2600804-736f-4bc5-933d-8a0d58b50d34",
   "statut": "actif"
 }
 
 ###
 
 // Mettre à jour un utilisateur par ID
-PUT http://localhost:5000/api/users/cd0fae10-6c68-408c-b22d-40aab1e4a972
+PUT http://localhost:5000/api/users/38abc969-853c-44c8-8906-64c71c300817
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "statut": "actif"
+  "role_id": "2d5c962a-5efa-4be0-ba87-eb1dbfce34fc"
   // Ajoutez d'autres champs à mettre à jour si nécessaire
 }
 
 ###
 
 // Supprimer un utilisateur par ID
-DELETE http://localhost:5000/api/users/b38cc859-9404-4adb-bf64-e464fa2b8f10
+DELETE http://localhost:5000/api/users/b17d9676-b3e0-41d9-a755-0a66061a9049
 Authorization: Bearer {{token}}
 
 ###
@@ -150,7 +150,7 @@ Authorization: Bearer {{token}}
 
 {
   "uid_rfid": "03-e3-3f-13",
-  "utilisateur_id": "d03fbd5b-c25f-45f5-aac8-47b11b121fd6",
+  "utilisateur_id": "38abc969-853c-44c8-8906-64c71c300817",
   "statut": "actif",
   "date_expiration": "2025-12-31"
 }
@@ -195,9 +195,10 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
+  "device_id": "v5.3.2-282-gcfea4f7c98-uui",
   "nom": "ESP32 ACTIONNEUR",
-  "mac_address": "3C:8A:1F:A3:DE:70", 
-  "zone_acces_id": "ff8ee8af-bf16-42cd-bc14-64e8151de3f4", 
+  "mac_address": "3C:8A:1F:A3:DE:70",
+  "zone_acces_id": "719c3d5b-fa33-4d06-b49c-183f88cdc756", 
   "statut": "en_ligne",
   "type":"actionneur"
 }
@@ -205,12 +206,12 @@ Authorization: Bearer {{token}}
 ###
 
 // Mettre à jour un dispositif par ID
-PUT http://localhost:5000/api/devices/v5.3.2-282-gcfea4f7c98-lucky
+PUT http://localhost:5000/api/devices/v5.3.2-282-gcfea4f7c98-uui
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "mac_address": "3C:8A:1F:A3:DE:70"
+    "id": "v5.3.2-282-gcfea4f7c98-dirty"
 }
 
 ###
@@ -350,8 +351,8 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "role_id": "66aa898f-5443-422a-b351-5b737bd230cc",  
-  "zone_acces_id": "ff8ee8af-bf16-42cd-bc14-64e8151de3f4", 
+  "role_id": "2d5c962a-5efa-4be0-ba87-eb1dbfce34fc",  
+  "zone_acces_id": "719c3d5b-fa33-4d06-b49c-183f88cdc756", 
   "heure_debut": "00:00:00",
   "heure_fin": "18:00:00",
   "jours_semaine": [1, 2, 3, 4, 5], 

@@ -2,6 +2,10 @@ import { z } from "zod";
 import { DeviceStatus, DeviceType } from "../models/device.model";
 
 export const deviceSchema = z.object({
+    id: z.string({
+        required_error: "L'ID du dispositif est requis",
+        invalid_type_error: "L'ID doit être une chaîne de caractères"
+    }).optional(),
     device_id:z.string({
         required_error: "L'ID du dispositif est requis",
         invalid_type_error: "L'ID doit être une chaîne de caractères"

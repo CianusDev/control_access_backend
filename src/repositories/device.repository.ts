@@ -65,6 +65,7 @@ export class DeviceRepository {
             `UPDATE dispositifs SET ${fields.join(", ")} WHERE id = $${idx} RETURNING *`,
             values
         );
+        console.log(result.rows[0]);
         return result.rows[0] as Device;
     }
 
