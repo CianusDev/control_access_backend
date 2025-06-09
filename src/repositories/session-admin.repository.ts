@@ -19,6 +19,13 @@ export class SessionAdminRepository {
         return result.rows[0] as SessionAdmin || null;
     }
 
+    async countSessions(): Promise<number> {
+        const result = await query(
+            `SELECT COUNT(*) FROM sessions_admin`
+        );
+        return parseInt(result.rows[0].count);
+    }
+
     async createSession(payload: Partial<SessionAdmin>): Promise<SessionAdmin> {
         const created_at = new Date();
         const expires_at = new Date(created_at.getTime() + 12 * 60 * 60 * 1000);

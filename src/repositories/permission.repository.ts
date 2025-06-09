@@ -20,6 +20,13 @@ export class PermissionRepository {
         return result.rows[0] as Permission || null;
     }
 
+    async countPermissions(): Promise<number> {
+        const result = await query(
+            `SELECT COUNT(*) FROM permissions`
+        );
+        return parseInt(result.rows[0].count);
+    }
+
     async createPermission(payload: z.infer<typeof permissionSchema>): Promise<Permission> {
         const result = await query(
             `INSERT INTO permissions (role_id, zone_acces_id, heure_debut, heure_fin, jours_semaine, actif) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,

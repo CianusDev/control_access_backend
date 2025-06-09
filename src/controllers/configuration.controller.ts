@@ -10,11 +10,14 @@ export class ConfigurationController {
             const limit = Math.max(1, parseInt(req.query.limit as string) || 20);
             const page = Math.max(1, parseInt(req.query.page as string) || 1);
             const offset = (page - 1) * limit;
-            const configurations = await configurationRepository.getConfigurations(limit, offset);
+            const [configurations, total] = await Promise.all([
+                configurationRepository.getConfigurations(limit, offset),
+                configurationRepository.countConfigurations()
+            ]);
             return res.status(200).json({
                 message: "Configurations récupérées avec succès",
                 configurations,
-                pagination: { limit, page, offset }
+                pagination: { limit, page, offset, total }
             });
         } catch (error) {
             let errorMessage = error instanceof Error ? error.message : error;

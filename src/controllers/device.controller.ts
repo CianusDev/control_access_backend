@@ -11,7 +11,10 @@ export class DeviceController {
             const limit = Math.max(1, parseInt(req.query.limit as string) || 20);
             const page = Math.max(1, parseInt(req.query.page as string) || 1);
             const offset = (page - 1) * limit;
-            const devices = await deviceRepository.getDevices(limit, offset);
+            const [devices, total] = await Promise.all([
+                deviceRepository.getDevices(limit, offset),
+                deviceRepository.countDevices()
+            ]);
 
             if (devices === null) {
                 res.status(500).json({ message: 'Erreur serveur' });
@@ -19,7 +22,7 @@ export class DeviceController {
                 res.status(200).json({
                     message: "Dispositifs récupérés avec succès",
                     devices,
-                    pagination: { limit, page, offset }
+                    pagination: { limit, page, offset, total }
                 });
             }
         } catch (error) {

@@ -21,6 +21,13 @@ export class AlertRepository {
         return result.rows[0] as Alert || null;
     }
 
+    async countAlerts(): Promise<number> {
+        const result = await query(
+            `SELECT COUNT(*) FROM alertes`
+        );
+        return parseInt(result.rows[0].count);
+    }
+
     async createAlert(payload: z.infer<typeof alertSchema>): Promise<Alert> {
         const result = await query(
             `INSERT INTO alertes (type_alerte, titre, message, niveau_gravite, utilisateur_id, dispositif_id, log_acces_id, statut, assignee_admin_id, date_traitement, commentaire_traitement, created_at)

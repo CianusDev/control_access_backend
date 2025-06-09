@@ -22,6 +22,13 @@ export class DeviceRepository {
         return result.rows[0] as Device || null;
     }
 
+    async countDevices(): Promise<number> {
+        const result = await query(
+            `SELECT COUNT(*) FROM dispositifs`
+        );
+        return parseInt(result.rows[0].count);
+    }
+
     async createDevice(payload: z.infer<typeof deviceSchema>): Promise<Device> {
         // Vérification unicité MAC
         const deviceMacResult = await query(

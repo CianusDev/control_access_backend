@@ -10,11 +10,14 @@ export class PermissionController {
             const limit = Math.max(1, parseInt(req.query.limit as string) || 20);
             const page = Math.max(1, parseInt(req.query.page as string) || 1);
             const offset = (page - 1) * limit;
-            const permissions = await permissionRepository.getPermissions(limit, offset);
+            const [permissions, total] = await Promise.all([
+                permissionRepository.getPermissions(limit, offset),
+                permissionRepository.countPermissions()
+            ]);
             return res.status(200).json({
                 message: "Permissions récupérées avec succès",
                 permissions,
-                pagination: { limit, page, offset }
+                pagination: { limit, page, offset, total }
             });
         } catch (error) {
             let errorMessage = error instanceof Error ? error.message : error;

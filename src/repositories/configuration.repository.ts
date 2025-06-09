@@ -28,6 +28,13 @@ export class ConfigurationRepository {
         return result.rows[0] as Configuration || null;
     }
 
+    async countConfigurations(): Promise<number> {
+        const result = await query(
+            `SELECT COUNT(*) FROM configuration`
+        );
+        return parseInt(result.rows[0].count);
+    }
+
     async createConfiguration(payload: z.infer<typeof configurationSchema>): Promise<Configuration> {
         const result = await query(
             `INSERT INTO configuration (cle, valeur, description, type_donnee) VALUES ($1, $2, $3, $4) RETURNING *`,

@@ -20,6 +20,13 @@ export class ZoneAccesRepository {
         return result.rows[0] as ZoneAcces || null;
     }
 
+    async countZones(): Promise<number> {
+        const result = await query(
+            `SELECT COUNT(*) FROM zones_acces`
+        );
+        return parseInt(result.rows[0].count);
+    }
+
     async createZone(payload: z.infer<typeof zoneAccesSchema>): Promise<ZoneAcces> {
         const result = await query(
             `INSERT INTO zones_acces (nom, description, niveau_securite, actif) VALUES ($1, $2, $3, $4) RETURNING *`,

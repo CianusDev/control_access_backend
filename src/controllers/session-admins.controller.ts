@@ -11,20 +11,19 @@ export class SessionAdminController {
             const limit = Math.max(1, parseInt(req.query.limit as string) || 20);
             const page = Math.max(1, parseInt(req.query.page as string) || 1);
             const offset = (page - 1) * limit;
-            const sessions = await sessionAdminRepository.getSessions(limit, offset);
+            const [sessions, total] = await Promise.all([
+                sessionAdminRepository.getSessions(limit, offset),
+                sessionAdminRepository.countSessions()
+            ]);
 
             if (sessions === null) {
-                res.status(500).json({ message: 'Erreur serveur' });
-            } else {
-                res.status(200).json({
-                    message: "Sessions récupérés avec succès",
-                    sessions,
-                    pagination: { limit, page, offset }
-                });
+                return res.status(500).json({ message: 'Erreur serveur' });
             }
 
             return res.status(200).json({
-                sessions
+                message: "Sessions récupérées avec succès",
+                sessions,
+                pagination: { limit, page, offset, total }
             });
 
         } catch (error) {
@@ -48,13 +47,13 @@ export class SessionAdminController {
         try {
             const session = await sessionAdminRepository.getSession(req.params.id);
             if (session === null) {
-                res.status(404).json({ message: 'Device not found' });
-            } else {
-                res.status(200).json({
-                    session
-                });
+                return res.status(404).json({ message: 'Session non trouvée' });
             }
-            res.status(200).json(session);
+            
+            return res.status(200).json({
+                message: "Session récupérée avec succès",
+                session
+            });
         } catch (error) {
             if (error instanceof Error) {
                 let errorMessage;
@@ -65,7 +64,7 @@ export class SessionAdminController {
                 }
 
                 return res.status(400).json({
-                    message: "Erreur lors de la récupération des sessions",
+                    message: "Erreur lors de la récupération de la session",
                     error: errorMessage,
                 });
             }   
@@ -141,7 +140,7 @@ export class SessionAdminController {
     static async deleteSession(req: Request, res: Response) {
         try{
             await sessionAdminRepository.deleteSession(req.params.id);
-            res.status(204).json({ message: 'Session deleted' });
+            return res.status(204).send();
         } catch (error) {
             if (error instanceof Error) {
                 let errorMessage;
@@ -152,13 +151,12 @@ export class SessionAdminController {
                 }
 
                 return res.status(400).json({
-                    message: "Erreur lors de la récupération des sessions",
+                    message: "Erreur lors de la suppression de la session",
                     error: errorMessage,
                 });
             }   
         }
     }     
-      
 }
     
     

@@ -12,11 +12,14 @@ export class AlertController {
             const limit = Math.max(1, parseInt(req.query.limit as string) || 20);
             const page = Math.max(1, parseInt(req.query.page as string) || 1);
             const offset = (page - 1) * limit;
-            const alerts = await alertRepository.getAlerts(limit, offset);
+            const [alerts, total] = await Promise.all([
+                alertRepository.getAlerts(limit, offset),
+                alertRepository.countAlerts()
+            ]);
             return res.status(200).json({
                 message: "Alertes récupérées avec succès",
                 alerts,
-                pagination: { limit, page, offset }
+                pagination: { limit, page, offset, total }
             });
         } catch (error) {
             if (error instanceof Error) {

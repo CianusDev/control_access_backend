@@ -11,11 +11,29 @@ export class BadgeController {
             const limit = Math.max(1, parseInt(req.query.limit as string) || 20);
             const page = Math.max(1, parseInt(req.query.page as string) || 1);
             const offset = (page - 1) * limit;
-            const badges = await badgeRepository.getBadges(limit, offset);
+            
+            // Récupération des filtres
+            const email = req.query.email as string | undefined;
+            const niveauAcces = req.query.niveau_acces ? parseInt(req.query.niveau_acces as string) : undefined;
+
+            const [badges, total] = await Promise.all([
+                badgeRepository.getBadges(limit, offset, email, niveauAcces),
+                badgeRepository.countBadges(email, niveauAcces)
+            ]);
+
             return res.status(200).json({
                 message: "Badges récupérés avec succès",
                 badges,
-                pagination: { limit, page, offset }
+                pagination: { 
+                    limit, 
+                    page, 
+                    offset, 
+                    total,
+                    filters: {
+                        email: email || null,
+                        niveauAcces: niveauAcces || null
+                    }
+                }
             });
         } catch (error) {
             if (error instanceof Error) {

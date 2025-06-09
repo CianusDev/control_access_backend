@@ -26,7 +26,7 @@ const getRolesHandler : RequestHandler =  async(req, res) => {
 
 
 // creer un nouveau role ( au moins admin )
-router.post('/', auth, isAdmin, sessionMiddleware,);
+router.post('/', auth, isAdmin, sessionMiddleware, createRoleHandler);
 
 // récupérer tous les roles ( au moins manager )
 router.get('/', auth, isManager, sessionMiddleware, getRolesHandler);

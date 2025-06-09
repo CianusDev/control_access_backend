@@ -5,20 +5,79 @@ import { badgeSchema } from "../schemas/badge.schema";
 import { hashPassword, hashUIDRFID } from "../utils/utils";
 
 export class BadgeRepository {
-    async getBadges(limit = 20, offset = 0): Promise<Badge[]> {
-        const result = await query(
-            `SELECT * FROM badges ORDER BY id LIMIT $1 OFFSET $2`,
-            [limit, offset]
-        );
+    async getBadges(limit = 20, offset = 0, email?: string, niveauAcces?: number): Promise<Badge[]> {
+        let sql = `
+            SELECT b.*, 
+                   u.nom as proprietaire_nom, 
+                   u.prenom as proprietaire_prenom,
+                   r.niveau_acces as proprietaire_niveau_acces
+            FROM badges b
+            LEFT JOIN utilisateurs u ON b.utilisateur_id = u.id
+            LEFT JOIN roles r ON u.role_id = r.id
+            WHERE 1=1
+        `;
+        const params: any[] = [];
+        let paramIndex = 1;
+
+        if (email) {
+            sql += ` AND u.email ILIKE $${paramIndex}`;
+            params.push(`%${email}%`);
+            paramIndex++;
+        }
+
+        if (niveauAcces !== undefined) {
+            sql += ` AND r.niveau_acces = $${paramIndex}`;
+            params.push(niveauAcces);
+            paramIndex++;
+        }
+
+        sql += ` ORDER BY b.id LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
+        params.push(limit, offset);
+
+        const result = await query(sql, params);
         return result.rows as Badge[];
     }
 
     async getBadge(id: string): Promise<Badge | null> {
         const result = await query(
-            `SELECT * FROM badges WHERE id = $1`,
+            `SELECT b.*, 
+                    u.nom as proprietaire_nom, 
+                    u.prenom as proprietaire_prenom,
+                    r.niveau_acces as proprietaire_niveau_acces
+             FROM badges b
+             LEFT JOIN utilisateurs u ON b.utilisateur_id = u.id
+             LEFT JOIN roles r ON u.role_id = r.id
+             WHERE b.id = $1`,
             [id]
         );
         return result.rows[0] as Badge || null;
+    }
+
+    async countBadges(email?: string, niveauAcces?: number): Promise<number> {
+        let sql = `
+            SELECT COUNT(*)
+            FROM badges b
+            LEFT JOIN utilisateurs u ON b.utilisateur_id = u.id
+            LEFT JOIN roles r ON u.role_id = r.id
+            WHERE 1=1
+        `;
+        const params: any[] = [];
+        let paramIndex = 1;
+
+        if (email) {
+            sql += ` AND u.email ILIKE $${paramIndex}`;
+            params.push(`%${email}%`);
+            paramIndex++;
+        }
+
+        if (niveauAcces !== undefined) {
+            sql += ` AND r.niveau_acces = $${paramIndex}`;
+            params.push(niveauAcces);
+            paramIndex++;
+        }
+
+        const result = await query(sql, params);
+        return parseInt(result.rows[0].count);
     }
 
     async createBadge(payload: z.infer<typeof badgeSchema>): Promise<Badge> {

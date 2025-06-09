@@ -12,10 +12,12 @@
 // ==========================================
 
 # Token pour l'utilisateur root
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI3MjVkMDhjNS0zZGI3LTQwZTgtYWZlMy01NWFiZWFhMWY0MmUiLCJyb2xlSWQiOiI2NjkzMGUyMy0xY2RlLTQ4NDYtODI4ZC02ZGIyOTI1YmMyMzIiLCJpYXQiOjE3NDg5MTY0MDQsImV4cCI6MTc0ODk1OTYwNH0.7_WB6gAguiXgb4S0ESJg76IkrcAIugSOYFXVatsnw0A
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI3MjVkMDhjNS0zZGI3LTQwZTgtYWZlMy01NWFiZWFhMWY0MmUiLCJyb2xlSWQiOiI2NjkzMGUyMy0xY2RlLTQ4NDYtODI4ZC02ZGIyOTI1YmMyMzIiLCJpYXQiOjE3NDk0MjYyNTUsImV4cCI6MTc0OTQ2OTQ1NX0.u1Xfitf-ftZfUFjX6ZsD6Eit_7l_4G-xRrTkREP4mEI
 
- # "3C:8A:1F:A3:DE:70", 
 // ==========================================
+### Authentification
+
+// Connexion
 POST http://localhost:5000/api/auth/login
 Content-Type: application/json
 
@@ -26,12 +28,7 @@ Content-Type: application/json
 
 ###
 
-# Après vous être connecté ci-dessus, copiez le token JWT de la réponse et utilisez-le dans l'en-tête Authorization pour les requêtes suivantes.
-# Remplacez <YOUR_JWT_TOKEN> par le token obtenu.
-
-### Authentification
-
-// Obtenir l'utilisateur courant (nécessite un token valide)
+// Obtenir l'utilisateur courant
 GET http://localhost:5000/api/auth/me
 Authorization: Bearer {{token}}
 
@@ -39,8 +36,8 @@ Authorization: Bearer {{token}}
 
 ### Utilisateurs (User)
 
-// Obtenir tous les utilisateurs (avec pagination si implémentée)
-GET http://localhost:5000/api/users
+// Obtenir tous les utilisateurs (avec pagination)
+GET http://localhost:5000/api/users?page=1&limit=20
 Authorization: Bearer {{token}}
 
 ###
@@ -59,7 +56,7 @@ Authorization: Bearer {{token}}
 {
   "nom": "Nouveau",
   "prenom": "Visiteur",
-  "email": "ujashalomtchandikou@gmail.com",
+  "email": "visiteur@example.com",
   "password": "motdepasse",
   "role_id": "d2600804-736f-4bc5-933d-8a0d58b50d34",
   "statut": "actif"
@@ -67,19 +64,18 @@ Authorization: Bearer {{token}}
 
 ###
 
-// Mettre à jour un utilisateur par ID
+// Mettre à jour un utilisateur
 PUT http://localhost:5000/api/users/38abc969-853c-44c8-8906-64c71c300817
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
   "role_id": "2d5c962a-5efa-4be0-ba87-eb1dbfce34fc"
-  // Ajoutez d'autres champs à mettre à jour si nécessaire
 }
 
 ###
 
-// Supprimer un utilisateur par ID
+// Supprimer un utilisateur
 DELETE http://localhost:5000/api/users/b17d9676-b3e0-41d9-a755-0a66061a9049
 Authorization: Bearer {{token}}
 
@@ -90,11 +86,11 @@ Authorization: Bearer {{token}}
 // Obtenir tous les rôles
 GET http://localhost:5000/api/roles
 Authorization: Bearer {{token}}
-Content-Type: application/json
+
 ###
 
 // Obtenir un rôle par ID
-GET http://localhost:5000/api/roles/<ROLE_ID>
+GET http://localhost:5000/api/roles/3bbf6689-298c-4c27-a6c4-c73b0b175834
 Authorization: Bearer {{token}}
 
 ###
@@ -112,18 +108,18 @@ Authorization: Bearer {{token}}
 
 ###
 
-// Mettre à jour un rôle par ID
+// Mettre à jour un rôle
 PUT http://localhost:5000/api/roles/3bbf6689-298c-4c27-a6c4-c73b0b175834
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "description": "Gestion des utilisateurs et zones"
+  "description": "Gestion des utilisateurs et zones"
 }
 
 ###
 
-// Supprimer un rôle par ID
+// Supprimer un rôle
 DELETE http://localhost:5000/api/roles/3bbf6689-298c-4c27-a6c4-c73b0b175834
 Authorization: Bearer {{token}}
 
@@ -132,13 +128,13 @@ Authorization: Bearer {{token}}
 ### Badges (Badge)
 
 // Obtenir tous les badges
-GET http://localhost:5000/api/badges
+GET http://localhost:5000/api/badges?email=ujashalomtchandikou@gmail.com
 Authorization: Bearer {{token}}
 
 ###
 
 // Obtenir un badge par ID
-GET http://localhost:5000/api/badges/XX-XX-XX-XX
+GET http://localhost:5000/api/badges/03-e3-3f-13
 Authorization: Bearer {{token}}
 
 ###
@@ -157,8 +153,8 @@ Authorization: Bearer {{token}}
 
 ###
 
-// Mettre à jour un badge par ID
-PUT http://localhost:5000/api/badges/5b9dac2f-c4ca-40dc-acc6-245e31206234
+// Mettre à jour un badge
+PUT http://localhost:5000/api/badges/03-e3-3f-13
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -169,8 +165,8 @@ Authorization: Bearer {{token}}
 
 ###
 
-// Supprimer un badge par ID
-DELETE http://localhost:5000/api/badges/06a7d128-b3a5-4519-bd26-868e84f83e99
+// Supprimer un badge
+DELETE http://localhost:5000/api/badges/03-e3-3f-13
 Authorization: Bearer {{token}}
 
 ###
@@ -184,7 +180,7 @@ Authorization: Bearer {{token}}
 ###
 
 // Obtenir un dispositif par ID
-GET http://localhost:5000/api/devices/a95c2e5c-2072-4ffd-9a4c-91ddf6ba154c
+GET http://localhost:5000/api/devices/v5.3.2-282-gcfea4f7c98-uui
 Authorization: Bearer {{token}}
 
 ###
@@ -200,60 +196,58 @@ Authorization: Bearer {{token}}
   "mac_address": "3C:8A:1F:A3:DE:70",
   "zone_acces_id": "719c3d5b-fa33-4d06-b49c-183f88cdc756", 
   "statut": "en_ligne",
-  "type":"actionneur"
+  "type": "actionneur"
 }
 
 ###
 
-// Mettre à jour un dispositif par ID
+// Mettre à jour un dispositif
 PUT http://localhost:5000/api/devices/v5.3.2-282-gcfea4f7c98-uui
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "id": "v5.3.2-282-gcfea4f7c98-dirty"
+  "nom": "ESP32 ACTIONNEUR MISE À JOUR",
+  "statut": "maintenance"
 }
 
 ###
 
-// Supprimer un dispositif par ID
-DELETE http://localhost:5000/api/devices/<DEVICE_ID>
+// Supprimer un dispositif
+DELETE http://localhost:5000/api/devices/v5.3.2-282-gcfea4f7c98-uui
 Authorization: Bearer {{token}}
 
 ###
 
 ### Logs d'accès (AccessLog)
 
-// Obtenir tous les logs d'accès (avec pagination)
-GET http://localhost:5000/api/access-logs
+// Obtenir tous les logs d'accès
+GET http://localhost:5000/api/access-logs?page=1&limit=20
 Authorization: Bearer {{token}}
 
 ###
 
 // Obtenir un log d'accès par ID
-GET http://localhost:5000/api/access-logs/<ACCESS_LOG_ID>
+GET http://localhost:5000/api/access-logs/51c734d3-a3ee-46d5-bb20-3cb08a285062
 Authorization: Bearer {{token}}
 
 ###
 
-// Note: La création et la suppression des logs d'accès sont généralement gérées automatiquement par le système.
-// Une route POST/DELETE pour les logs n'est souvent pas nécessaire pour une API externe.
-
 ### Alertes (Alert)
 
-// Obtenir toutes les alertes (avec pagination)
-GET http://localhost:5000/api/alerts
-  Authorization: Bearer {{token}}
+// Obtenir toutes les alertes
+GET http://localhost:5000/api/alerts?page=1&limit=20
+Authorization: Bearer {{token}}
 
 ###
 
 // Obtenir une alerte par ID
-GET http://localhost:5000/api/alerts/<ALERT_ID>
+GET http://localhost:5000/api/alerts/51c734d3-a3ee-46d5-bb20-3cb08a285062
 Authorization: Bearer {{token}}
 
 ###
 
-// Créer une nouvelle alerte (souvent déclenchée par le système interne, mais utile pour les tests)
+// Créer une nouvelle alerte
 POST http://localhost:5000/api/alerts
 Content-Type: application/json
 Authorization: Bearer {{token}}
@@ -261,27 +255,27 @@ Authorization: Bearer {{token}}
 {
   "type_alerte": "tentative_intrusion",
   "titre": "Tentative d'intrusion détectée",
-  "message": "Une tentative d'accès suspecte a été enregistrée sur le dispositif XYZ.",
+  "message": "Une tentative d'accès suspecte a été enregistrée",
   "niveau_gravite": "critical",
-  "dispositif_id": "a95c2e5c-2072-4ffd-9a4c-91ddf6ba154c"
+  "dispositif_id": "v5.3.2-282-gcfea4f7c98-uui"
 }
 
 ###
 
-// Mettre à jour une alerte par ID (par exemple, changer son statut)
+// Mettre à jour une alerte
 PUT http://localhost:5000/api/alerts/51c734d3-a3ee-46d5-bb20-3cb08a285062
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
   "statut": "traitee",
-  "commentaire_traitement": "Examiné et résolu."
+  "commentaire_traitement": "Examiné et résolu"
 }
 
 ###
 
-// Supprimer une alerte par ID
-DELETE http://localhost:5000/api/alerts/<ALERT_ID>
+// Supprimer une alerte
+DELETE http://localhost:5000/api/alerts/51c734d3-a3ee-46d5-bb20-3cb08a285062
 Authorization: Bearer {{token}}
 
 ###
@@ -307,26 +301,27 @@ Authorization: Bearer {{token}}
 
 {
   "nom": "Zone Sécurisée",
-  "description": "Zone nécessitant un accès restreint.",
+  "description": "Zone nécessitant un accès restreint",
   "niveau_securite": 4,
   "actif": true
 }
 
 ###
 
-// Mettre à jour une zone d'accès par ID
+// Mettre à jour une zone d'accès
 PUT http://localhost:5000/api/zones-acces/f29aa04d-b318-4c26-af3d-cf2d187bdbcb
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "actif": true
+  "actif": true,
+  "niveau_securite": 5
 }
 
 ###
 
-// Supprimer une zone d'accès par ID
-DELETE http://localhost:5000/api/zones-acces/<ZONE_ACCES_ID>
+// Supprimer une zone d'accès
+DELETE http://localhost:5000/api/zones-acces/f29aa04d-b318-4c26-af3d-cf2d187bdbcb
 Authorization: Bearer {{token}}
 
 ###
@@ -340,7 +335,7 @@ Authorization: Bearer {{token}}
 ###
 
 // Obtenir une permission par ID
-GET http://localhost:5000/api/permissions/<PERMISSION_ID>
+GET http://localhost:5000/api/permissions/44a90501-d537-497b-8978-4827267fc910
 Authorization: Bearer {{token}}
 
 ###
@@ -351,32 +346,32 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "role_id": "2d5c962a-5efa-4be0-ba87-eb1dbfce34fc",  
-  "zone_acces_id": "719c3d5b-fa33-4d06-b49c-183f88cdc756", 
+  "role_id": "2d5c962a-5efa-4be0-ba87-eb1dbfce34fc",
+  "zone_acces_id": "719c3d5b-fa33-4d06-b49c-183f88cdc756",
   "heure_debut": "00:00:00",
   "heure_fin": "18:00:00",
-  "jours_semaine": [1, 2, 3, 4, 5], 
+  "jours_semaine": [1, 2, 3, 4, 5],
   "actif": true
 }
 
 ###
 
-// Mettre à jour une permission par ID
+// Mettre à jour une permission
 PUT http://localhost:5000/api/permissions/44a90501-d537-497b-8978-4827267fc910
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
   "actif": true,
-  "jours_semaine": [1,2,3,4,5],
+  "jours_semaine": [1, 2, 3, 4, 5],
   "heure_debut": "03:00:00",
   "heure_fin": "18:00:00"
 }
 
 ###
 
-// Supprimer une permission par ID
-DELETE http://localhost:5000/api/permissions/<PERMISSION_ID>
+// Supprimer une permission
+DELETE http://localhost:5000/api/permissions/44a90501-d537-497b-8978-4827267fc910
 Authorization: Bearer {{token}}
 
 ###
@@ -390,7 +385,7 @@ Authorization: Bearer {{token}}
 ###
 
 // Obtenir une configuration par clé
-GET http://localhost:5000/api/configuration/<CONFIG_KEY>
+GET http://localhost:5000/api/configuration/nouvelle_cle
 Authorization: Bearer {{token}}
 
 ###
@@ -409,8 +404,8 @@ Authorization: Bearer {{token}}
 
 ###
 
-// Mettre à jour une configuration par clé
-PUT http://localhost:5000/api/configuration/<CONFIG_KEY>
+// Mettre à jour une configuration
+PUT http://localhost:5000/api/configuration/nouvelle_cle
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -420,8 +415,8 @@ Authorization: Bearer {{token}}
 
 ###
 
-// Supprimer une configuration par clé
-DELETE http://localhost:5000/api/configuration/<CONFIG_KEY>
+// Supprimer une configuration
+DELETE http://localhost:5000/api/configuration/nouvelle_cle
 Authorization: Bearer {{token}}
 
 ###
@@ -429,28 +424,41 @@ Authorization: Bearer {{token}}
 ### Sessions Admin (SessionAdmin)
 
 // Obtenir toutes les sessions admin
-GET http://localhost:5000/api/sessions-admin
+GET http://localhost:5000/api/sessions-admin?page=1&limit=20
 Authorization: Bearer {{token}}
 
 ###
 
 // Obtenir une session admin par ID
-GET http://localhost:5000/api/sessions-admin/<SESSION_ADMIN_ID>
+GET http://localhost:5000/api/sessions-admin/51c734d3-a3ee-46d5-bb20-3cb08a285062
 Authorization: Bearer {{token}}
 
 ###
 
-// Note: La création et la suppression des sessions admin sont souvent gérées automatiquement lors du login/logout.
-// Des routes POST/DELETE directes ne sont pas toujours exposées via l'API. 
+// Supprimer une session admin
+DELETE http://localhost:5000/api/sessions-admin/51c734d3-a3ee-46d5-bb20-3cb08a285062
+Authorization: Bearer {{token}}
 
-// Verifier si un badge a acess a une zone donnee 
+###
+
+### Accès (Access)
+
+// Vérifier l'accès d'un badge à une zone
 POST http://localhost:5000/api/access
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "deviceId": "v5.3.2-282-gcfea4f7c98-dirty",
+  "deviceId": "v5.3.2-282-gcfea4f7c98-uui",
   "uidRfid": "03-e3-3f-13",
   "pin": "889233D6",
   "attemptType": "badge_pin"
 }
+
+###
+
+### Statistiques (Stats)
+
+// Obtenir les statistiques
+GET http://localhost:5000/stats
+Authorization: Bearer {{token}}

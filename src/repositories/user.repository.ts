@@ -86,6 +86,13 @@ export class UserRepository {
         return result.rows as User[];
     }
 
+    async countUsers(): Promise<number> {
+        const result = await query(
+            `SELECT COUNT(*) FROM utilisateurs`
+        );
+        return parseInt(result.rows[0].count);
+    }
+
     async getUserByPin(pin: string): Promise<User | null> {
         const pin_hash = await hashPassword(pin)
         const result = await query(

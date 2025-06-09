@@ -21,6 +21,13 @@ export class RoleRepository {
         return result.rows[0] as Role || null;
     }
 
+    async countRoles(): Promise<number> {
+        const result = await query(
+            `SELECT COUNT(*) FROM roles`
+        );
+        return parseInt(result.rows[0].count);
+    }
+
     async createRole(payload: z.infer<typeof roleSchema>): Promise<Role> {
         const roleExistsResult = await query(
             `SELECT * FROM roles WHERE nom = $1`,

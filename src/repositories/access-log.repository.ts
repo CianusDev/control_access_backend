@@ -20,6 +20,13 @@ export class AccessLogRepository {
         return result.rows[0] as AccessLog || null;
     }
 
+    async countAccessLogs(): Promise<number> {
+        const result = await query(
+            `SELECT COUNT(*) FROM logs_acces`
+        );
+        return parseInt(result.rows[0].count);
+    }
+
     async createAccessLog(payload: z.infer<typeof accessLogSchema>): Promise<AccessLog> {
         const result = await query(
             `INSERT INTO logs_acces (utilisateur_id, badge_id, dispositif_id, type_tentative, resultat, uid_rfid_tente, adresse_ip, details, timestamp)

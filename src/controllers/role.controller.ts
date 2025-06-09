@@ -12,11 +12,14 @@ export class RoleController {
             const limit = Math.max(1, parseInt(req.query.limit as string) || 20);
             const page = Math.max(1, parseInt(req.query.page as string) || 1);
             const offset = (page - 1) * limit;
-            const roles = await roleRepository.getRoles(limit, offset);
+            const [roles, total] = await Promise.all([
+                roleRepository.getRoles(limit, offset),
+                roleRepository.countRoles()
+            ]);
             return res.status(200).json({
                 message: "Rôles récupérés avec succès",
                 roles,
-                pagination: { limit, page, offset }
+                pagination: { limit, page, offset, total }
             });
         } catch (error) {
             if (error instanceof Error) {

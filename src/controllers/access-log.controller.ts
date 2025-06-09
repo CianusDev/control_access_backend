@@ -11,11 +11,14 @@ export class AccessLogController {
             const limit = Math.max(1, parseInt(req.query.limit as string) || 20);
             const page = Math.max(1, parseInt(req.query.page as string) || 1);
             const offset = (page - 1) * limit;
-            const accessLogs = await accessLogRepository.getAccessLogs(limit, offset);
+            const [accessLogs, total] = await Promise.all([
+                accessLogRepository.getAccessLogs(limit, offset),
+                accessLogRepository.countAccessLogs()
+            ]);
             return res.status(200).json({
                 message: "Logs d'accès récupérés avec succès",
                 accessLogs,
-                pagination: { limit, page, offset }
+                pagination: { limit, page, offset, total }
             });
         } catch (error) {
             if (error instanceof Error) {

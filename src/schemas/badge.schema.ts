@@ -2,18 +2,15 @@ import { z } from "zod";
 import { BadgeStatus } from "../models/badge.model";
 
 export const badgeSchema = z.object({
-    uid_rfid: z.string({
-        required_error: "L'UID RFID est requis",
-        invalid_type_error: "L'UID doit être une chaîne de caractères"
-    })
-    .min(3)
-    .trim(),
-    utilisateur_id: z.string().optional(),
-    statut: z.nativeEnum(BadgeStatus),
-    date_assignation: z.coerce.date().optional(),
-    date_expiration: z.coerce.date().optional(),
+    uid_rfid: z.string().min(1),
+    utilisateur_id: z.string().uuid().optional(),
+    statut: z.enum([BadgeStatus.actif, BadgeStatus.inactif, BadgeStatus.perdu, BadgeStatus.vole]).default(BadgeStatus.actif),
+    date_assignation: z.date().optional(),
+    date_expiration: z.date().optional(),
     commentaire: z.string().optional(),
+    // proprietaire_nom: z.string().optional(),
+    // proprietaire_prenom: z.string().optional(),
+    // proprietaire_niveau_acces: z.number().optional()
 });
 
-
-export const updateBadgeSchema =  badgeSchema.partial();
+export const updateBadgeSchema = badgeSchema.partial();
