@@ -6,11 +6,8 @@ export const badgeSchema = z.object({
     utilisateur_id: z.string().uuid().optional(),
     statut: z.enum([BadgeStatus.actif, BadgeStatus.inactif, BadgeStatus.perdu, BadgeStatus.vole]).default(BadgeStatus.actif),
     date_assignation: z.date().optional(),
-    date_expiration: z.date().optional(),
+    date_expiration: z.coerce.date().optional(),
     commentaire: z.string().optional(),
-    // proprietaire_nom: z.string().optional(),
-    // proprietaire_prenom: z.string().optional(),
-    // proprietaire_niveau_acces: z.number().optional()
 });
 
 export const updateBadgeSchema = badgeSchema.partial();
