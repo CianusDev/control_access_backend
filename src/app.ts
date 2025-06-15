@@ -30,6 +30,6 @@ app.use('/api/zones-acces', ZonesAccesRoute);
 app.use('/api/permissions', PermissionRoute);
 app.use('/api/configuration', ConfigurationRoute);
 app.use('/api/access', AccessRoute)
-app.use('/stats', statsRoutes); 
+app.use('/api/stats', statsRoutes); 
 app.use('/api/sessions-admin', SessionAdminRoute);
 

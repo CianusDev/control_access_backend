@@ -12,13 +12,13 @@
 // ==========================================
 
 # Token pour l'utilisateur root
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI3MjVkMDhjNS0zZGI3LTQwZTgtYWZlMy01NWFiZWFhMWY0MmUiLCJyb2xlSWQiOiI2NjkzMGUyMy0xY2RlLTQ4NDYtODI4ZC02ZGIyOTI1YmMyMzIiLCJpYXQiOjE3NDk0MjYyNTUsImV4cCI6MTc0OTQ2OTQ1NX0.u1Xfitf-ftZfUFjX6ZsD6Eit_7l_4G-xRrTkREP4mEI
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyZjM4NjhjYS1hMjJjLTRlOWQtYTcxMy1jMjcxNzk2MmI4YTMiLCJyb2xlSWQiOiIxOGRlNjllNS04MTM4LTRhMmUtOGMwYy01NTQ3ZWZlYWJhNmMiLCJpYXQiOjE3NTAwMDEzOTcsImV4cCI6MTc1MDA0NDU5N30.3BOHbV8id0tve3yo-oMdoYNkQRCr0FCAMy8o08pSiV8
 
 // ==========================================
 ### Authentification
 
 // Connexion
-POST http://localhost:5000/api/auth/login
+POST https://control-access-backend.onrender.com/api/auth/login
 Content-Type: application/json
 
 {
@@ -460,5 +460,5 @@ Authorization: Bearer {{token}}
 ### Statistiques (Stats)
 
 // Obtenir les statistiques
-GET http://localhost:5000/stats
+GET https://control-access-backend.onrender.com/api/stats
 Authorization: Bearer {{token}}
