@@ -38,4 +38,9 @@ export type AccessLog = {
     adresse_ip?: string;
     details?: any; // JSONB
     timestamp: Date;
+    // Nouveaux champs
+    proprietaire_nom?: string;
+    proprietaire_prenom?: string;
+    dispositif_nom?: string;
+    badge_numero?: string;
 }

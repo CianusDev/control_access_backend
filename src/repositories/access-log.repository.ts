@@ -6,7 +6,18 @@ import { accessLogSchema } from "../schemas/access-log.schema";
 export class AccessLogRepository {
     async getAccessLogs(limit = 20, offset = 0): Promise<AccessLog[]> {
         const result = await query(
-            `SELECT * FROM logs_acces ORDER BY id LIMIT $1 OFFSET $2`,
+            `SELECT 
+                la.*,
+                u.nom as proprietaire_nom,
+                u.prenom as proprietaire_prenom,
+                d.nom as dispositif_nom,
+                b.uid_rfid as badge_numero
+            FROM logs_acces la
+            LEFT JOIN utilisateurs u ON la.utilisateur_id = u.id
+            LEFT JOIN dispositifs d ON la.dispositif_id = d.id
+            LEFT JOIN badges b ON la.badge_id = b.id
+            ORDER BY la.timestamp DESC
+            LIMIT $1 OFFSET $2`,
             [limit, offset]
         );
         return result.rows as AccessLog[];
@@ -14,7 +25,17 @@ export class AccessLogRepository {
 
     async getAccessLog(id: string): Promise<AccessLog | null> {
         const result = await query(
-            `SELECT * FROM logs_acces WHERE id = $1`,
+            `SELECT 
+                la.*,
+                u.nom as proprietaire_nom,
+                u.prenom as proprietaire_prenom,
+                d.nom as dispositif_nom,
+                b.uid_rfid as badge_numero
+            FROM logs_acces la
+            LEFT JOIN utilisateurs u ON la.utilisateur_id = u.id
+            LEFT JOIN dispositifs d ON la.dispositif_id = d.id
+            LEFT JOIN badges b ON la.badge_id = b.id
+            WHERE la.id = $1`,
             [id]
         );
         return result.rows[0] as AccessLog || null;
