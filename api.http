@@ -12,7 +12,7 @@
 // ==========================================
 
 # Token pour l'utilisateur root
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyZjM4NjhjYS1hMjJjLTRlOWQtYTcxMy1jMjcxNzk2MmI4YTMiLCJyb2xlSWQiOiIxOGRlNjllNS04MTM4LTRhMmUtOGMwYy01NTQ3ZWZlYWJhNmMiLCJpYXQiOjE3NTAwMDEzOTcsImV4cCI6MTc1MDA0NDU5N30.3BOHbV8id0tve3yo-oMdoYNkQRCr0FCAMy8o08pSiV8
+@token = 
 
 // ==========================================
 ### Authentification
