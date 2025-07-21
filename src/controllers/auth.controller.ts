@@ -5,6 +5,7 @@ import { createUserToken } from "../utils/utils";
 import { query } from "../config/database";
 import { StringValue } from 'ms';
 import { RoleRepository } from "../repositories/role.repository";
+import { getClientIP } from "../utils/ip-utils";
 
 const authRepository = new AuthRepository();
 const sessionAdminRepository = new SessionAdminRepository();
@@ -49,10 +50,10 @@ export class AuthController {
             try {
                 await sessionAdminRepository.createSession({
                     utilisateur_id: user.id,
-                    adresse_ip: req.ip,
+                    adresse_ip: getClientIP(req),
                     user_agent: req.headers['user-agent'],
                 });
-                console.log(`✅ Session admin créée pour l'utilisateur ${user.id}`);
+                console.log(`✅ Session admin créée pour l'utilisateur ${user.id} depuis l'IP: ${getClientIP(req)}`);
             } catch (sessionError) {
                 console.error('❌ Erreur lors de la création de la session admin :', sessionError);
             }

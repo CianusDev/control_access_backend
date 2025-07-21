@@ -14,6 +14,9 @@ import statsRoutes from './routes/stats.route';
 import SessionAdminRoute from './routes/session-admin.route';
 
 export const app = express();
+
+// Configuration pour récupérer l'IP réelle du client
+app.set('trust proxy', true); // Fait confiance aux en-têtes de proxy
 app.use(express.json()); // 👈 nécessaire pour parser le JSON
 
 /*
