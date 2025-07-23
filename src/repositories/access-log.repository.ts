@@ -50,9 +50,9 @@ export class AccessLogRepository {
 
     async createAccessLog(payload: z.infer<typeof accessLogSchema>): Promise<AccessLog> {
         const result = await query(
-            `INSERT INTO logs_acces (utilisateur_id, badge_id, dispositif_id, type_tentative, resultat, uid_rfid_tente, adresse_ip, details, timestamp)
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
-            [payload.utilisateur_id, payload.badge_id, payload.dispositif_id, payload.type_tentative, payload.resultat, payload.uid_rfid_tente, payload.adresse_ip, payload.details, payload.timestamp]
+            `INSERT INTO logs_acces (utilisateur_id, badge_id, dispositif_id, type_tentative, resultat, uid_rfid_tente, adresse_ip, details)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
+            [payload.utilisateur_id, payload.badge_id, payload.dispositif_id, payload.type_tentative, payload.resultat, payload.uid_rfid_tente, payload.adresse_ip, payload.details]
         );
         return result.rows[0] as AccessLog;
     }
